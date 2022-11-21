@@ -143,7 +143,7 @@ public class ResourceManager : MonoBehaviour {
 							team = 1;
 						}
 						for (int j = 0; j < beesPerResource; j++) {
-							BeeManager.SpawnBee(resource.position,team);
+							BeeManager.instance.SpawnBee(resource.position,team);
 						}
 						ParticleManager.SpawnParticle(resource.position,ParticleType.SpawnFlash,Vector3.zero,6f,5);
 						DeleteResource(resource);

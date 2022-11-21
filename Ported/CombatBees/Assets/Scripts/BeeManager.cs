@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class BeeManager : MonoBehaviour {
 	public Mesh beeMesh;
 	public Material beeMaterial;
@@ -28,6 +29,8 @@ public class BeeManager : MonoBehaviour {
 	[Space(10)]
 	public int startBeeCount;
 
+	public bool useEntities = false;
+
 	List<Bee> bees;
 	List<Bee>[] teamsOfBees;
 	List<Bee> pooledBees;
@@ -36,18 +39,18 @@ public class BeeManager : MonoBehaviour {
 	List<List<Matrix4x4>> beeMatrices;
 	List<List<Vector4>> beeColors;
 
-	static BeeManager instance;
+	public static BeeManager instance;
 
 	const int beesPerBatch=1023;
 	MaterialPropertyBlock matProps;
 
-	public static void SpawnBee(int team) {
+	public void SpawnBee(int team) {
 		Vector3 pos = Vector3.right * (-Field.size.x * .4f + Field.size.x * .8f * team);
-		instance._SpawnBee(pos,team);
+            _SpawnBee(pos,team);
 	}
 
-	public static void SpawnBee(Vector3 pos,int team) {
-		instance._SpawnBee(pos,team);
+	public void SpawnBee(Vector3 pos,int team) {
+			_SpawnBee(pos,team);
 	}
 	void _SpawnBee(Vector3 pos, int team) {
 		Bee bee;
