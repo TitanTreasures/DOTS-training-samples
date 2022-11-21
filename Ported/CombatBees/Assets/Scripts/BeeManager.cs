@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.Entities;
+using Unity.Transforms;
 using UnityEngine;
+using static UnityEditor.MaterialProperty;
 
 
 public class BeeManager : MonoBehaviour {
@@ -44,35 +47,56 @@ public class BeeManager : MonoBehaviour {
 	const int beesPerBatch=1023;
 	MaterialPropertyBlock matProps;
 
+	EntityManager entityManager;
+
+
+    private void Start()
+	{
+
+        entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
+        for (int i = 0; i < 10; i++)
+		{
+			SpawnBee(0);
+		}
+		
+	}
+
 	public void SpawnBee(int team) {
 		Vector3 pos = Vector3.right * (-Field.size.x * .4f + Field.size.x * .8f * team);
             _SpawnBee(pos,team);
 	}
 
 	public void SpawnBee(Vector3 pos,int team) {
-			_SpawnBee(pos,team);
+		_SpawnBee(pos,team);
 	}
 	void _SpawnBee(Vector3 pos, int team) {
-		Bee bee;
-		if (pooledBees.Count == 0) {
-			bee = new Bee();
-		} else {
-			bee = pooledBees[pooledBees.Count-1];
-			pooledBees.RemoveAt(pooledBees.Count - 1);
-		}
-		bee.Init(pos,team,Random.Range(minBeeSize,maxBeeSize));
-		bee.velocity = Random.insideUnitSphere * maxSpawnSpeed;
-		bees.Add(bee);
-		teamsOfBees[team].Add(bee);
-		if (beeMatrices[activeBatch].Count == beesPerBatch) {
-			activeBatch++;
-			if (beeMatrices.Count==activeBatch) {
-				beeMatrices.Add(new List<Matrix4x4>());
-				beeColors.Add(new List<Vector4>());
-			}
-		}
-		beeMatrices[activeBatch].Add(Matrix4x4.identity);
-		beeColors[activeBatch].Add(teamColors[team]);
+
+        Entity prototype = entityManager.CreateEntity();
+		//manager.AddComponent(beeEntity, ComponentType.ChunkComponent<Transform>());
+        entityManager.AddComponentData(prototype, new Translation { Value = pos });
+        // Use set to set after init
+        //manager.SetComponentData(beeEntity, new Translation { Value = pos });
+
+  //      Bee bee;
+		//if (pooledBees.Count == 0) {
+		//	bee = new Bee();
+		//} else {
+		//	bee = pooledBees[pooledBees.Count-1];
+		//	pooledBees.RemoveAt(pooledBees.Count - 1);
+		//}
+		//bee.Init(pos,team,Random.Range(minBeeSize,maxBeeSize));
+		//bee.velocity = Random.insideUnitSphere * maxSpawnSpeed;
+		//bees.Add(bee);
+		//teamsOfBees[team].Add(bee);
+		//if (beeMatrices[activeBatch].Count == beesPerBatch) {
+		//	activeBatch++;
+		//	if (beeMatrices.Count==activeBatch) {
+		//		beeMatrices.Add(new List<Matrix4x4>());
+		//		beeColors.Add(new List<Vector4>());
+		//	}
+		//}
+		//beeMatrices[activeBatch].Add(Matrix4x4.identity);
+		//beeColors[activeBatch].Add(teamColors[team]);
 	}
 	void DeleteBee(Bee bee) {
 		pooledBees.Add(bee);
@@ -88,29 +112,29 @@ public class BeeManager : MonoBehaviour {
 	void Awake() {
 		instance = this;
 	}
-	void Start () {
-		bees = new List<Bee>(50000);
-		teamsOfBees = new List<Bee>[2];
-		pooledBees = new List<Bee>(50000);
+	//void Start () {
+	//	bees = new List<Bee>(50000);
+	//	teamsOfBees = new List<Bee>[2];
+	//	pooledBees = new List<Bee>(50000);
 
-		beeMatrices = new List<List<Matrix4x4>>();
-		beeMatrices.Add(new List<Matrix4x4>());
-		beeColors = new List<List<Vector4>>();
-		beeColors.Add(new List<Vector4>());
+	//	beeMatrices = new List<List<Matrix4x4>>();
+	//	beeMatrices.Add(new List<Matrix4x4>());
+	//	beeColors = new List<List<Vector4>>();
+	//	beeColors.Add(new List<Vector4>());
 
-		matProps = new MaterialPropertyBlock();
+	//	matProps = new MaterialPropertyBlock();
 
-		for (int i=0;i<2;i++) {
-			teamsOfBees[i] = new List<Bee>(25000);
-		}
-		for (int i=0;i<startBeeCount;i++) {
-			int team = i%2;
-			SpawnBee(team);
-		}
+	//	for (int i=0;i<2;i++) {
+	//		teamsOfBees[i] = new List<Bee>(25000);
+	//	}
+	//	for (int i=0;i<startBeeCount;i++) {
+	//		int team = i%2;
+	//		SpawnBee(team);
+	//	}
 
-		matProps = new MaterialPropertyBlock();
-		matProps.SetVectorArray("_Color",new Vector4[beesPerBatch]);
-	}
+	//	matProps = new MaterialPropertyBlock();
+	//	matProps.SetVectorArray("_Color",new Vector4[beesPerBatch]);
+	//}
 
 	void FixedUpdate() {
 		float deltaTime = Time.fixedDeltaTime;
