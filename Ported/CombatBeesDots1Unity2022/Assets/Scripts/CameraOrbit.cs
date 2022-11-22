@@ -6,14 +6,13 @@ public class CameraOrbit : MonoBehaviour {
 	public float sensitivity;
 	public float zoomSensitivity;
 	public float stiffness;
+	public float viewDist;
 
 	Vector2 viewAngles;
 	Vector2 smoothViewAngles;
-	float viewDist;
 	float smoothViewDist;
 
 	void Start () {
-		viewDist = 70f;
 		smoothViewDist = viewDist;
 	}
 	
