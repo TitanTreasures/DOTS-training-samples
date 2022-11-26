@@ -6,11 +6,11 @@ public partial class MovingSystemBase : SystemBase
 {
     protected override void OnUpdate()
     {
-        foreach ((TransformAspect transformAspect, RefRO<Speed> speed, RefRW<TargetPosition> targetPosition) in
-            SystemAPI.Query<TransformAspect, RefRO<Speed>, RefRW<TargetPosition>>())
+        RefRW<RandomComponent> randomComponent = SystemAPI.GetSingletonRW<RandomComponent>();
+
+        foreach (MoveToPositionAspect  moveToPositionAspect in  SystemAPI.Query<MoveToPositionAspect>())
         {
-            float3 direction = math.normalize(targetPosition.ValueRW.value - transformAspect.Position);
-            transformAspect.Position += direction * SystemAPI.Time.DeltaTime * speed.ValueRO.value;
+            moveToPositionAspect.Move(SystemAPI.Time.DeltaTime);
         }
     }
 }
