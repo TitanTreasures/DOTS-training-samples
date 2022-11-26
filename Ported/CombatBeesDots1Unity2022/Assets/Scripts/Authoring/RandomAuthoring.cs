@@ -4,7 +4,7 @@ using Unity.Mathematics;
 
 public class RandomAuthoring: MonoBehaviour
 {
-
+    //uint seed = (uint)SystemAPI.Time.ElapsedTime;
 }
 
 public class RandomBaker : Baker<RandomAuthoring>
@@ -13,7 +13,7 @@ public class RandomBaker : Baker<RandomAuthoring>
     {
         AddComponent(new RandomComponent
         {
-            random = new Unity.Mathematics.Random((uint)SystemAPI.Time.ElapsedTime)
+            random = new Unity.Mathematics.Random(1)
         });
     }
 }
