@@ -423,3 +423,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   beePrefab: {fileID: 7224386084554687862, guid: dfa5331eb3265a64ab40d0c7531b2547,
     type: 3}
+  totalSpawnCount: 10
+  currentSpawnCount: 0

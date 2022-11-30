@@ -23,16 +23,11 @@ public partial struct BeeSpawnerISystem : ISystem
         //EntityQuery beeEntityQuery = ecb.query.CreateEntityQuery(typeof(BeeTag));
         var beeSpawnerComponent = SystemAPI.GetSingleton<BeeSpawnerComponent>();
 
-        if(beeSpawnerComponent.currentSpawnCount < beeSpawnerComponent.totalSpawnCount)
+        new SpawnJob
         {
-            //new SpawnJob
-            //{
-            //    BeePrefab = beeSpawnerComponent.beePrefab,
-            //    ECB = ecb.CreateCommandBuffer(state.WorldUnmanaged)
-            //}.Run();
-            //Debug.Log("" + beeSpawnerComponent.currentSpawnCount);
-            beeSpawnerComponent.currentSpawnCount++;
-        }
+            BeePrefab = beeSpawnerComponent.beePrefab,
+            ECB = ecb.CreateCommandBuffer(state.WorldUnmanaged)
+        }.Run();
     }
 }
 [BurstCompile]
@@ -42,8 +37,8 @@ public partial struct SpawnJob : IJobEntity
     public EntityCommandBuffer ECB;
 
     [BurstCompile]
-    public void Execute()
+    public void Execute(SpawnBeeAspect spawnBeeAspect)
     {
-        ECB.Instantiate(BeePrefab);
+        spawnBeeAspect.Spawn(ECB);
     }
 }
