@@ -226,7 +226,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &606085647
 GameObject:
@@ -257,6 +257,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad59443d268c7b748bf997914ca09e0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  randomSeed: 0
 --- !u!4 &606085649
 Transform:
   m_ObjectHideFlags: 0
@@ -270,7 +271,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1059942637
 GameObject:
@@ -375,8 +376,81 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1365798145
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 7224386084554687857, guid: dfa5331eb3265a64ab40d0c7531b2547,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7224386084554687857, guid: dfa5331eb3265a64ab40d0c7531b2547,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7224386084554687857, guid: dfa5331eb3265a64ab40d0c7531b2547,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7224386084554687857, guid: dfa5331eb3265a64ab40d0c7531b2547,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7224386084554687857, guid: dfa5331eb3265a64ab40d0c7531b2547,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7224386084554687857, guid: dfa5331eb3265a64ab40d0c7531b2547,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7224386084554687857, guid: dfa5331eb3265a64ab40d0c7531b2547,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7224386084554687857, guid: dfa5331eb3265a64ab40d0c7531b2547,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7224386084554687857, guid: dfa5331eb3265a64ab40d0c7531b2547,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7224386084554687857, guid: dfa5331eb3265a64ab40d0c7531b2547,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7224386084554687857, guid: dfa5331eb3265a64ab40d0c7531b2547,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7224386084554687862, guid: dfa5331eb3265a64ab40d0c7531b2547,
+        type: 3}
+      propertyPath: m_Name
+      value: Bee
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: dfa5331eb3265a64ab40d0c7531b2547, type: 3}
 --- !u!1 &2004820408
 GameObject:
   m_ObjectHideFlags: 0
@@ -407,7 +481,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2004820410
 MonoBehaviour:
@@ -418,10 +492,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2004820408}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 79d7e54ba510251458ebec17edb1c889, type: 3}
+  m_Script: {fileID: 11500000, guid: aa611b15baf84684b9c78ba25cb73a05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   beePrefab: {fileID: 7224386084554687862, guid: dfa5331eb3265a64ab40d0c7531b2547,
     type: 3}
-  totalSpawnCount: 10
-  currentSpawnCount: 0
+  maxBeeSpawnCount: 250
+  randomSeed: 100
