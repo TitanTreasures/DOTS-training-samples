@@ -123,6 +123,58 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &246566794
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 246566796}
+  - component: {fileID: 246566797}
+  m_Layer: 0
+  m_Name: YellowBeeSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &246566796
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 246566794}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 13, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &246566797
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 246566794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e29b515d87d235942a22f4d771561bd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  beePrefab: {fileID: 3858072093232548404, guid: 4b46197f3ee49394fa94442063c77dc5,
+    type: 3}
+  maxBeeSpawnCount: 250
+  fieldDimensions:
+    x: 10
+    y: 20
+    z: 30
+  randomSeed: 2
 --- !u!1 &356665378
 GameObject:
   m_ObjectHideFlags: 0
@@ -134,7 +186,7 @@ GameObject:
   - component: {fileID: 356665380}
   - component: {fileID: 356665379}
   m_Layer: 0
-  m_Name: BeeSpawner
+  m_Name: BlueBeeSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -154,12 +206,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   beePrefab: {fileID: 3858072093232548404, guid: f5e24fdf1bc7b7b408851819d8697ec2,
     type: 3}
-  maxBeeSpawnCount: 220
+  maxBeeSpawnCount: 250
   fieldDimensions:
-    x: 50
-    y: 25
-    z: 15
-  randomSeed: 100
+    x: 10
+    y: 20
+    z: 30
+  randomSeed: 1
 --- !u!4 &356665380
 Transform:
   m_ObjectHideFlags: 0
@@ -168,7 +220,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 356665378}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -13, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -4,7 +4,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
 
-public class BeeSpawnerMono : MonoBehaviour
+public class BlueBeeSpawnerMono : MonoBehaviour
 {
     public GameObject beePrefab;
     public int maxBeeSpawnCount;
@@ -12,11 +12,11 @@ public class BeeSpawnerMono : MonoBehaviour
     // For randomness
     public uint randomSeed;
 }
-public class BeeSpawnerBaker : Baker<BeeSpawnerMono>
+public class BlueBeeSpawnerBaker : Baker<BlueBeeSpawnerMono>
 {
-    public override void Bake(BeeSpawnerMono authoring)
+    public override void Bake(BlueBeeSpawnerMono authoring)
     {
-        AddComponent(new BeeSpawnerComponent
+        AddComponent(new BlueBeeSpawnerComponent
         {
             beePrefab = GetEntity(authoring.beePrefab),
             maxBeeSpawnCount = authoring.maxBeeSpawnCount,

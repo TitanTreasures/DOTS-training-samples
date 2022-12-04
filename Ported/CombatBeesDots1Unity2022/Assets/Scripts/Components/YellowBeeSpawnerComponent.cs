@@ -4,7 +4,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
 
-public struct BeeSpawnerComponent : IComponentData
+public struct YellowBeeSpawnerComponent : IComponentData
 {
     public Entity beePrefab;
     public int maxBeeSpawnCount;

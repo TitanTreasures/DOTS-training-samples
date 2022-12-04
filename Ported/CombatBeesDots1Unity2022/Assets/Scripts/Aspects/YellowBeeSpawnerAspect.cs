@@ -5,14 +5,14 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 
-public readonly partial struct BeeSpawnerAspect : IAspect
+public readonly partial struct YellowBeeSpawnerAspect : IAspect
 {
     // For referencing the related entity
     public readonly Entity entity;
     // Transform needed for aspect to apply to beeSpawner
     private readonly TransformAspect _transformAspect;
     // Spawner components for entity amount management
-    private readonly RefRO<BeeSpawnerComponent> _beeSpawnerComponent;
+    private readonly RefRO<YellowBeeSpawnerComponent> _beeSpawnerComponent;
     // Random component for positioning
     private readonly RefRW<RandomComponent> _randomComponent;
 

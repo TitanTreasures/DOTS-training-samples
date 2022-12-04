@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Mathematics;
+using Unity.Rendering;
 using Unity.Transforms;
 using UnityEngine;
 
@@ -15,7 +17,7 @@ public partial struct SpawnBeeSystem : ISystem
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
-        state.RequireForUpdate<BeeSpawnerComponent>();
+        state.RequireForUpdate<BlueBeeSpawnerComponent>();
     }
     [BurstCompile]
     public void OnDestroy(ref SystemState state)
@@ -25,20 +27,37 @@ public partial struct SpawnBeeSystem : ISystem
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        var beeSpawnerEntity = SystemAPI.GetSingletonEntity<BeeSpawnerComponent>();
-        var beeSpawnerAspect = SystemAPI.GetAspectRW<BeeSpawnerAspect>(beeSpawnerEntity);
-
+        // Disabling the system ensures it runs only once... For some reason...
+        state.Enabled = false;
         // Using temp for the ecb, because it is cheapest (Disposes at the same frame)
         var ecb = new EntityCommandBuffer(Allocator.Temp);
 
-        for (int i = 0; i < beeSpawnerAspect.maxBeeSpawnCount; i++)
+        // Blue teams initial spawning
+        var blueBeeSpawnerEntity = SystemAPI.GetSingletonEntity<BlueBeeSpawnerComponent>();
+        var blueBeeSpawnerAspect = SystemAPI.GetAspectRW<BlueBeeSpawnerAspect>(blueBeeSpawnerEntity);
+        for (int i = 0; i < blueBeeSpawnerAspect.maxBeeSpawnCount; i++)
         {
-            var newBee = ecb.Instantiate(beeSpawnerAspect.beePrefab);
-            var newTransform = beeSpawnerAspect.GetRandomBeeTransform();
+            // Set create new bee and set initial position
+            var newBee = ecb.Instantiate(blueBeeSpawnerAspect.beePrefab);
+            var newTransform = blueBeeSpawnerAspect.GetRandomBeeTransform();
             ecb.SetComponent(newBee, new LocalToWorldTransform { Value = newTransform });
+            // Set team and color
+            ecb.SetComponent(newBee, new BeePropertiesComponent { team = 1 });
         }
 
+        // Yellow teams initial spawning
+        var yellowBeeSpawnerEntity = SystemAPI.GetSingletonEntity<YellowBeeSpawnerComponent>();
+        var yellowBeeSpawnerAspect = SystemAPI.GetAspectRW<YellowBeeSpawnerAspect>(yellowBeeSpawnerEntity);
+        for (int i = 0; i < yellowBeeSpawnerAspect.maxBeeSpawnCount; i++)
+        {
+            // Set create new bee and set initial position
+            var newBee = ecb.Instantiate(yellowBeeSpawnerAspect.beePrefab);
+            var newTransform = yellowBeeSpawnerAspect.GetRandomBeeTransform();
+            ecb.SetComponent(newBee, new LocalToWorldTransform { Value = newTransform });
+            // Set team and color
+            ecb.SetComponent(newBee, new BeePropertiesComponent { team = 2 });
+            //ecb.SetComponent(newBee, new URPMaterialPropertyBaseColor { Value = new float4(0, 0, 1, 1) });
+        }
         ecb.Playback(state.EntityManager);
-        state.Enabled = false;
     }
 }
