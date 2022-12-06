@@ -7,6 +7,10 @@ using UnityEngine;
 public class BeeMono : MonoBehaviour
 {
     public int team;
+    public float flySpeed;
+
+    // For randomness
+    public uint randomSeed;
 }
 public class BeeBaker : Baker<BeeMono>
 {
@@ -14,7 +18,12 @@ public class BeeBaker : Baker<BeeMono>
     {
         AddComponent(new BeePropertiesComponent
         {
-            team = authoring.team 
+            team = authoring.team,
+            flySpeed = authoring.flySpeed,
+        });
+        AddComponent(new RandomComponent
+        {
+            randomValue = Unity.Mathematics.Random.CreateFromIndex(authoring.randomSeed)
         });
     }
 }

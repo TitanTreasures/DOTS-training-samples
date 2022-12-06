@@ -9,15 +9,19 @@ using Unity.Rendering;
 using Unity.Transforms;
 using UnityEngine;
 
+
 [BurstCompile]
 // This is done to make this system part of the group that is handled before others
 [UpdateInGroup(typeof(InitializationSystemGroup))]
+// Maybe rename to "InitialSpawnerSystem" or something like that
 public partial struct SpawnBeeSystem : ISystem
 {
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
         state.RequireForUpdate<BlueBeeSpawnerComponent>();
+        state.RequireForUpdate<YellowBeeSpawnerComponent>();
+        state.RequireForUpdate<ResourceSpawnerComponent>();
     }
     [BurstCompile]
     public void OnDestroy(ref SystemState state)
@@ -58,6 +62,18 @@ public partial struct SpawnBeeSystem : ISystem
             ecb.SetComponent(newBee, new BeePropertiesComponent { team = 2 });
             //ecb.SetComponent(newBee, new URPMaterialPropertyBaseColor { Value = new float4(0, 0, 1, 1) });
         }
+
+        // Resources initial spawning
+        var resourceSpawnerEntity = SystemAPI.GetSingletonEntity<ResourceSpawnerComponent>();
+        var resourceSpawnerAspect = SystemAPI.GetAspectRW<ResourceSpawnerAspect>(resourceSpawnerEntity);
+        for (int i = 0; i < resourceSpawnerAspect.maxResourceSpawnCount; i++)
+        {
+            // Set create new bee and set initial position
+            var newResource = ecb.Instantiate(resourceSpawnerAspect.resourcePrefab);
+            var newTransform = resourceSpawnerAspect.GetRandomResourceTransform();
+            ecb.SetComponent(newResource, new LocalToWorldTransform { Value = newTransform });
+        }
+
         ecb.Playback(state.EntityManager);
     }
 }

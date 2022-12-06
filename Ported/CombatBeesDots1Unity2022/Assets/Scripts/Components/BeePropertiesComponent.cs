@@ -7,6 +7,8 @@ using UnityEngine;
 public struct BeePropertiesComponent : IComponentData
 {
     public int team;
-    //public float size;
+    public float flySpeed;
     //public Entity enemyTarget;
 }
+
+public struct BeeGoingToResourceTag : IComponentData { }

@@ -1,0 +1,25 @@
+using System.Collections;
+using System.Collections.Generic;
+using Unity.Entities;
+using UnityEngine;
+
+public class ResourceMono : MonoBehaviour
+{
+    public Entity holder;
+
+    public Entity targetResource;
+}
+public class ResourceBaker : Baker<ResourceMono>
+{
+    public override void Bake(ResourceMono authoring)
+    {
+        AddComponent(new ResourcePropertiesComponent
+        {
+            holder = authoring.holder
+        });
+        AddComponent(new TargetResourceComponent
+        {
+            targetResource = authoring.targetResource
+        });
+    }
+}
