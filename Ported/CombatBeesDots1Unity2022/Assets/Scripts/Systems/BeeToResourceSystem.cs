@@ -1,19 +1,23 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 [BurstCompile]
 public partial struct BeeToResourceSystem : ISystem
 {
+    public Unity.Mathematics.Random random;
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
+        random = Unity.Mathematics.Random.CreateFromIndex(1);
     }
 
     [BurstCompile]
@@ -21,26 +25,24 @@ public partial struct BeeToResourceSystem : ISystem
     {
     }
 
-    
+    [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
         //for testing
-        //state.Enabled = false;
+        // state.Enabled = true;
 
         var deltaTime = SystemAPI.Time.DeltaTime;
-        //var ecb = new EntityCommandBuffer(Allocator.Temp);
+        var ecb = new EntityCommandBuffer(Allocator.Temp);
 
-        var resourcePositions = new List<float3>();
         foreach (var resource in SystemAPI.Query<ResourceAspect>().WithAll<TargetResourceComponent>())
         {
-            resourcePositions.Add(resource.GetResourcePosition());
-        }
-        foreach (var bee in SystemAPI.Query<BeeMoveToResourceAspect>().WithAll<BeePropertiesComponent>())
-        {
-            var randomIndex = bee.GetRandomResourceIndex(resourcePositions.Count);
+            var randPos = resource.GetResourcePosition();
+
+            //var rand = random.NextInt(0, resourcePositions.Count() - 1);
+            //var randPos = resourcePositions[rand];
             new BeeToResourceJob
             {
-                ResourcePos = resourcePositions[randomIndex],
+                ResourcePos = randPos,
                 DeltaTime = deltaTime,
             }.Run();
         }
@@ -53,7 +55,7 @@ public partial struct BeeToResourceSystem : ISystem
         public float3 ResourcePos;
         //public EntityCommandBuffer ECB;
 
-        [BurstCompile]
+        
         private void Execute(BeeMoveToResourceAspect bee)
         {
             bee.FlyToResource(DeltaTime, ResourcePos);

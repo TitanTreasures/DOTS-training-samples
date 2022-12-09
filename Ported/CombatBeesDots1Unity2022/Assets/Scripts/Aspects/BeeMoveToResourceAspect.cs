@@ -22,7 +22,9 @@ public readonly partial struct BeeMoveToResourceAspect : IAspect
 
     public void FlyToResource(float deltaTime, float3 targetResourcePosition)
     {
+        //Debug.Log(targetResourcePosition);
         float3 direction = math.normalize(targetResourcePosition - _transformAspect.Position);
+        //Debug.Log("Bee Position" + _transformAspect.Position);
         _transformAspect.Position += direction * deltaTime * flySpeed;
     }
 
