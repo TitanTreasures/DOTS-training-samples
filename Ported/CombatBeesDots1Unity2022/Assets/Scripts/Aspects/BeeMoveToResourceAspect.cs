@@ -7,7 +7,7 @@ using UnityEngine;
 
 public readonly partial struct BeeMoveToResourceAspect : IAspect
 {
-    private readonly Entity entity;
+    public readonly Entity entity;
 
     private readonly TransformAspect _transformAspect;
     private readonly RefRO<BeePropertiesComponent> _beePropertiesComponent;
@@ -24,6 +24,10 @@ public readonly partial struct BeeMoveToResourceAspect : IAspect
     {
         float3 direction = math.normalize(targetResourcePosition - _transformAspect.Position);
         _transformAspect.Position += direction * deltaTime * flySpeed;
+    }
+    public bool IsInPickupRange(float3 resourcePos, float resourceRadiusSq)
+    {
+        return math.distancesq(resourcePos, _transformAspect.Position) <= resourceRadiusSq;
     }
 
     public int GetRandomResourceIndex(int resourcesAmount)

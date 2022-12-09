@@ -45,8 +45,6 @@ public partial struct SpawnBeeSystem : ISystem
             var newBee = ecb.Instantiate(blueBeeSpawnerAspect.beePrefab);
             var newTransform = blueBeeSpawnerAspect.GetRandomBeeTransform();
             ecb.SetComponent(newBee, new LocalToWorldTransform { Value = newTransform });
-            // Set team and color
-            ecb.SetComponent(newBee, new BeePropertiesComponent { team = 1 });
         }
 
         // Yellow teams initial spawning
@@ -58,9 +56,6 @@ public partial struct SpawnBeeSystem : ISystem
             var newBee = ecb.Instantiate(yellowBeeSpawnerAspect.beePrefab);
             var newTransform = yellowBeeSpawnerAspect.GetRandomBeeTransform();
             ecb.SetComponent(newBee, new LocalToWorldTransform { Value = newTransform });
-            // Set team and color
-            ecb.SetComponent(newBee, new BeePropertiesComponent { team = 2 });
-            //ecb.SetComponent(newBee, new URPMaterialPropertyBaseColor { Value = new float4(0, 0, 1, 1) });
         }
 
         // Resources initial spawning

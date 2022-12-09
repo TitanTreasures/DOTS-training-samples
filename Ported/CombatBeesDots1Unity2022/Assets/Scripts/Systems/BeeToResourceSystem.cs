@@ -21,29 +21,21 @@ public partial struct BeeToResourceSystem : ISystem
     {
     }
 
-    
+
     public void OnUpdate(ref SystemState state)
     {
         //for testing
         //state.Enabled = false;
 
         var deltaTime = SystemAPI.Time.DeltaTime;
-        //var ecb = new EntityCommandBuffer(Allocator.Temp);
+        var ecb = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>();
 
-        var resourcePositions = new List<float3>();
-        foreach (var resource in SystemAPI.Query<ResourceAspect>().WithAll<TargetResourceComponent>())
+        new BeeToResourceJob
         {
-            resourcePositions.Add(resource.GetResourcePosition());
-        }
-        foreach (var bee in SystemAPI.Query<BeeMoveToResourceAspect>().WithAll<BeePropertiesComponent>())
-        {
-            var randomIndex = bee.GetRandomResourceIndex(resourcePositions.Count);
-            new BeeToResourceJob
-            {
-                ResourcePos = resourcePositions[randomIndex],
-                DeltaTime = deltaTime,
-            }.Run();
-        }
+            DeltaTime = deltaTime,
+            ResourcePos = float3.zero,
+            ECB = ecb.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
+        }.ScheduleParallel();
     }
 
     [BurstCompile]
@@ -51,12 +43,16 @@ public partial struct BeeToResourceSystem : ISystem
     {
         public float DeltaTime;
         public float3 ResourcePos;
-        //public EntityCommandBuffer ECB;
+        public EntityCommandBuffer.ParallelWriter ECB;
 
         [BurstCompile]
-        private void Execute(BeeMoveToResourceAspect bee)
+        private void Execute(BeeMoveToResourceAspect bee, [EntityInQueryIndex] int sortKey)
         {
             bee.FlyToResource(DeltaTime, ResourcePos);
+            if (bee.IsInPickupRange(ResourcePos, 1f))
+            {
+                ECB.SetComponentEnabled<BeePropertiesComponent>(sortKey, bee.entity, false);
+            }
         }
     }
 }

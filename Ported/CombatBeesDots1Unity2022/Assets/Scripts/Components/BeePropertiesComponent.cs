@@ -4,11 +4,11 @@ using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
 
-public struct BeePropertiesComponent : IComponentData
+public struct BeePropertiesComponent : IComponentData, IEnableableComponent
 {
     public int team;
     public float flySpeed;
-    //public Entity enemyTarget;
+    public Entity enemyTarget;
 }
 
 public struct BeeGoingToResourceTag : IComponentData { }
