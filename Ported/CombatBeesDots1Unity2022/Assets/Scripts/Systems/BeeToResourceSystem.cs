@@ -49,7 +49,7 @@ public partial struct BeeToResourceSystem : ISystem
         public EntityCommandBuffer.ParallelWriter ECB;
 
         [BurstCompile]
-        private void Execute(BeeMoveToResourceAspect bee, [EntityInQueryIndex] int sortKey)
+        private void Execute(BeeMoveToResourceAspect bee, [EntityIndexInQuery] int sortKey)
         {
             bee.FlyToResource(DeltaTime, ResourcePos);
             if (bee.IsInPickupRange(ResourcePos, 1f))

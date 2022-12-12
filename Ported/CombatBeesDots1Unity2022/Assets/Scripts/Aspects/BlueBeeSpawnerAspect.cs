@@ -21,9 +21,9 @@ public readonly partial struct BlueBeeSpawnerAspect : IAspect
     public Entity beePrefab => _beeSpawnerComponent.ValueRO.beePrefab;
 
     // Using ust here because it supposedly is an easy/performance friendly way to transform
-    public UniformScaleTransform GetRandomBeeTransform()
+    public WorldTransform GetRandomBeeTransform()
     {
-        return new UniformScaleTransform
+        return new WorldTransform
         {
             Position = GetRandomPosition(),
             Rotation = quaternion.identity,
@@ -39,8 +39,8 @@ public readonly partial struct BlueBeeSpawnerAspect : IAspect
         return randomPosition;
     }
 
-    private float3 minCorner => _transformAspect.Position - halfDimensions;
-    private float3 maxCorner => _transformAspect.Position + halfDimensions;
+    private float3 minCorner => _transformAspect.WorldPosition - halfDimensions;
+    private float3 maxCorner => _transformAspect.WorldPosition + halfDimensions;
     private float3 halfDimensions => new()
     {
         x = _beeSpawnerComponent.ValueRO.fieldDimensions.x * 0.5f,

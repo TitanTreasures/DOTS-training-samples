@@ -276,6 +276,6 @@ MonoBehaviour:
   maxResourceSpawnCount: 100
   fieldDimensions:
     x: 10
-    y: 0
+    y: 10
     z: 10
   randomSeed: 0
