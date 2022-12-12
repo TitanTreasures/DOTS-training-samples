@@ -1,32 +1,35 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 [BurstCompile]
 public partial struct BeeToResourceSystem : ISystem
 {
+    public Unity.Mathematics.Random random;
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
+        random = Unity.Mathematics.Random.CreateFromIndex(1);
     }
 
     [BurstCompile]
     public void OnDestroy(ref SystemState state)
     {
+
     }
 
+    [BurstCompile]
 
     public void OnUpdate(ref SystemState state)
     {
-        //for testing
-        //state.Enabled = false;
-
         var deltaTime = SystemAPI.Time.DeltaTime;
         var ecb = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>();
 

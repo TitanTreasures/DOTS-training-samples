@@ -7,6 +7,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Rendering;
 using Unity.Transforms;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 
@@ -45,6 +46,8 @@ public partial struct SpawnBeeSystem : ISystem
             var newBee = ecb.Instantiate(blueBeeSpawnerAspect.beePrefab);
             var newTransform = blueBeeSpawnerAspect.GetRandomBeeTransform();
             ecb.SetComponent(newBee, new LocalToWorldTransform { Value = newTransform });
+            ecb.SetComponent(newBee, new RandomComponent { randomValue = Unity.Mathematics.Random.CreateFromIndex(Convert.ToUInt32(i)) });
+
         }
 
         // Yellow teams initial spawning
@@ -56,6 +59,9 @@ public partial struct SpawnBeeSystem : ISystem
             var newBee = ecb.Instantiate(yellowBeeSpawnerAspect.beePrefab);
             var newTransform = yellowBeeSpawnerAspect.GetRandomBeeTransform();
             ecb.SetComponent(newBee, new LocalToWorldTransform { Value = newTransform });
+            ecb.SetComponent(newBee, new RandomComponent { randomValue = Unity.Mathematics.Random.CreateFromIndex(Convert.ToUInt32(i)) });
+            //ecb.SetComponent(newBee, new URPMaterialPropertyBaseColor { Value = new float4(0, 0, 1, 1) });
+
         }
 
         // Resources initial spawning
