@@ -21,9 +21,9 @@ public readonly partial struct ResourceSpawnerAspect : IAspect
     public Entity resourcePrefab => _ResourceSpawnerComponent.ValueRO.resourcePrefab;
 
     // Using ust here because it supposedly is an easy/performance friendly way to transform
-    public WorldTransform GetRandomResourceTransform()
+    public UniformScaleTransform GetRandomResourceTransform()
     {
-        return new WorldTransform
+        return new UniformScaleTransform
         {
             Position = GetRandomPosition(),
             Rotation = quaternion.identity,
@@ -39,8 +39,8 @@ public readonly partial struct ResourceSpawnerAspect : IAspect
         return randomPosition;
     }
 
-    private float3 minCorner => _transformAspect.WorldPosition - halfDimensions;
-    private float3 maxCorner => _transformAspect.WorldPosition + halfDimensions;
+    private float3 minCorner => _transformAspect.Position - halfDimensions;
+    private float3 maxCorner => _transformAspect.Position + halfDimensions;
     private float3 halfDimensions => new()
     {
         x = _ResourceSpawnerComponent.ValueRO.fieldDimensions.x * 0.5f,

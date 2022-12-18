@@ -45,7 +45,7 @@ public partial struct SpawnBeeSystem : ISystem
             // Set create new bee and set initial position
             var newBee = ecb.Instantiate(blueBeeSpawnerAspect.beePrefab);
             var newTransform = blueBeeSpawnerAspect.GetRandomBeeTransform();
-            ecb.SetComponent(newBee, new WorldTransform { _Position = newTransform.Position, _Rotation = newTransform.Rotation, _Scale = newTransform.Scale });
+            ecb.SetComponent(newBee, new LocalToWorldTransform { Value = newTransform });
             ecb.SetComponent(newBee, new RandomComponent { randomValue = Unity.Mathematics.Random.CreateFromIndex(Convert.ToUInt32(i)) });
 
         }
@@ -58,7 +58,7 @@ public partial struct SpawnBeeSystem : ISystem
             // Set create new bee and set initial position
             var newBee = ecb.Instantiate(yellowBeeSpawnerAspect.beePrefab);
             var newTransform = yellowBeeSpawnerAspect.GetRandomBeeTransform();
-            ecb.SetComponent(newBee, new WorldTransform { _Position = newTransform.Position, _Rotation = newTransform.Rotation, _Scale = newTransform.Scale });
+            ecb.SetComponent(newBee, new LocalToWorldTransform { Value = newTransform });
             ecb.SetComponent(newBee, new RandomComponent { randomValue = Unity.Mathematics.Random.CreateFromIndex(Convert.ToUInt32(i)) });
             //ecb.SetComponent(newBee, new URPMaterialPropertyBaseColor { Value = new float4(0, 0, 1, 1) });
 
@@ -72,7 +72,7 @@ public partial struct SpawnBeeSystem : ISystem
             // Set create new bee and set initial position
             var newResource = ecb.Instantiate(resourceSpawnerAspect.resourcePrefab);
             var newTransform = resourceSpawnerAspect.GetRandomResourceTransform();
-            ecb.SetComponent(newResource, new WorldTransform { _Position = newTransform.Position, _Rotation = newTransform.Rotation, _Scale = newTransform.Scale });
+            ecb.SetComponent(newResource, new LocalToWorldTransform { Value = newTransform });
         }
 
         ecb.Playback(state.EntityManager);
