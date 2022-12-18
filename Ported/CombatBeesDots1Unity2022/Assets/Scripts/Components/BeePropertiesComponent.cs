@@ -6,7 +6,6 @@ using UnityEngine;
 
 public struct BeePropertiesComponent : IComponentData, IEnableableComponent
 {
-    public int team;
     public float flySpeed;
     public Entity enemyTarget;
 }

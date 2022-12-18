@@ -16,9 +16,16 @@ public class BeeBaker : Baker<BeeMono>
 {
     public override void Bake(BeeMono authoring)
     {
+        if (authoring.team == 0)
+        {
+            AddComponent(new BlueBeeTag());
+        }
+        else if(authoring.team == 1)
+        {
+            AddComponent(new YellowBeeTag());
+        }
         AddComponent(new BeePropertiesComponent
         {
-            team = authoring.team,
             flySpeed = authoring.flySpeed,
         });
         AddComponent(new RandomComponent

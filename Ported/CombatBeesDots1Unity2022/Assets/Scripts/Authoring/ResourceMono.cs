@@ -13,6 +13,8 @@ public class ResourceBaker : Baker<ResourceMono>
 {
     public override void Bake(ResourceMono authoring)
     {
+        AddComponent(new ResourceTag());
+
         AddComponent(new ResourcePropertiesComponent
         {
             holder = authoring.holder

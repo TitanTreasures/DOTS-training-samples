@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
 
-public struct BeeTag : IComponentData
+public struct BlueBeeTag : IComponentData
 {
     
 }
