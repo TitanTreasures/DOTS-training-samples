@@ -6,14 +6,24 @@ using UnityEngine;
 
 public class SpawnerMono : MonoBehaviour
 {
-    public GameObject resourcePrefab;
-    public GameObject blueBeePrefab;
-    public GameObject yellowBeePrefab;
-    public int resourceSpawnCount, blueBeeSpawnCount, yellowBeeSpawnCount;
-    public float3 resourceFieldPosition, blueBeeFieldPosition, yellowBeeFieldPosition;
-    public float3 resourceFieldDimensions, blueBeeFieldDimensions, yellowBeeFieldDimensions;
+    [Header("Seed")]
     // For randomness
     public uint randomSeed;
+    [Header("Resource")]
+    public GameObject resourcePrefab;
+    public int resourceSpawnCount;
+    public float3 resourceFieldPosition;
+    public float3 resourceFieldDimensions;
+    [Header("Blue Bee")]
+    public GameObject blueBeePrefab;
+    public int blueBeeSpawnCount; 
+    public float3 blueBeeFieldPosition;
+    public float3 blueBeeFieldDimensions;
+    [Header("Yellow Bee")]
+    public GameObject yellowBeePrefab;
+    public int yellowBeeSpawnCount;
+    public float3 yellowBeeFieldPosition;
+    public float3 yellowBeeFieldDimensions;
 }
 public class SpawnerBaker : Baker<SpawnerMono>
 {

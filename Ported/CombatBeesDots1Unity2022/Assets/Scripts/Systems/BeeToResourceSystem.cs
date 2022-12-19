@@ -14,10 +14,18 @@ using UnityEngine;
 public partial struct BeeToResourceSystem : ISystem
 {
     public Unity.Mathematics.Random random;
+
+    EntityQuery seekingQuery;
+    EntityQuery carryingQuery;
+    EntityQuery attackingQuery;
+
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
         random = Unity.Mathematics.Random.CreateFromIndex(1);
+        seekingQuery = state.GetEntityQuery(ComponentType.ReadOnly<BeeSeekingTag>());
+        carryingQuery = state.GetEntityQuery(ComponentType.ReadOnly<BeeCarryingTag>());
+        attackingQuery = state.GetEntityQuery(ComponentType.ReadOnly<BeeAttackingTag>());
     }
 
     [BurstCompile]
@@ -27,22 +35,29 @@ public partial struct BeeToResourceSystem : ISystem
     }
 
     [BurstCompile]
-
     public void OnUpdate(ref SystemState state)
     {
         var deltaTime = SystemAPI.Time.DeltaTime;
         var ecb = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>();
 
-        new BeeToResourceJob
+        new BeeSeekingJob
         {
             DeltaTime = deltaTime,
             ResourcePos = float3.zero,
             ECB = ecb.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
-        }.ScheduleParallel();
+        }.ScheduleParallel(seekingQuery);
+
+        new BeeCarryingJob
+        {
+            DeltaTime = deltaTime,
+            BasePos = new float3(20, 0, 0),
+            ECB = ecb.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
+        }.ScheduleParallel(carryingQuery);
+
     }
 
     [BurstCompile]
-    public partial struct BeeToResourceJob : IJobEntity
+    public partial struct BeeSeekingJob : IJobEntity
     {
         public float DeltaTime;
         public float3 ResourcePos;
@@ -54,7 +69,26 @@ public partial struct BeeToResourceSystem : ISystem
             bee.FlyToResource(DeltaTime, ResourcePos);
             if (bee.IsInPickupRange(ResourcePos, 1f))
             {
-                ECB.SetComponentEnabled<BeePropertiesComponent>(sortKey, bee.entity, false);
+                ECB.SetComponentEnabled<BeeCarryingTag>(sortKey, bee.entity, true);
+                ECB.SetComponentEnabled<BeeSeekingTag>(sortKey, bee.entity, false);
+            }
+        }
+    }
+    [BurstCompile]
+    public partial struct BeeCarryingJob : IJobEntity
+    {
+        public float DeltaTime;
+        public float3 BasePos;
+        public EntityCommandBuffer.ParallelWriter ECB;
+
+        [BurstCompile]
+        private void Execute(BeeMoveToResourceAspect bee, [EntityIndexInQuery] int sortKey)
+        {
+            bee.FlyToResource(DeltaTime, BasePos);
+            if (bee.IsInPickupRange(BasePos, 1f))
+            {
+                ECB.SetComponentEnabled<BeeSeekingTag>(sortKey, bee.entity, true);
+                ECB.SetComponentEnabled<BeeCarryingTag>(sortKey, bee.entity, false);
             }
         }
     }

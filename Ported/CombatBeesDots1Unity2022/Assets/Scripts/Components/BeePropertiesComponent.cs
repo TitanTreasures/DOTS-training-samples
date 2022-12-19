@@ -4,7 +4,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
 
-public struct BeePropertiesComponent : IComponentData, IEnableableComponent
+public struct BeePropertiesComponent : IComponentData
 {
     public float flySpeed;
     public Entity enemyTarget;

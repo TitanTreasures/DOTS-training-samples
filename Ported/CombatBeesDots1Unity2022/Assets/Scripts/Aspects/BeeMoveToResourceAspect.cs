@@ -23,13 +23,13 @@ public readonly partial struct BeeMoveToResourceAspect : IAspect
     public void FlyToResource(float deltaTime, float3 targetResourcePosition)
     {
         //Debug.Log(targetResourcePosition);
-        float3 direction = math.normalize(targetResourcePosition - _transformAspect.Position);
+        float3 direction = math.normalize(targetResourcePosition - _transformAspect.LocalPosition);
         //Debug.Log("Bee Position" + _transformAspect.Position);
-        _transformAspect.Position += direction * deltaTime * flySpeed;
+        _transformAspect.LocalPosition += direction * deltaTime * flySpeed;
     }
     public bool IsInPickupRange(float3 resourcePos, float resourceRadiusSq)
     {
-        return math.distancesq(resourcePos, _transformAspect.Position) <= resourceRadiusSq;
+        return math.distancesq(resourcePos, _transformAspect.LocalPosition) <= resourceRadiusSq;
     }
 
     public int GetRandomResourceIndex(int resourcesAmount)

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
 
-public struct YellowBeeTag : IComponentData
+public struct YellowBeeTag : IComponentData, IEnableableComponent
 {
 
 }

@@ -167,37 +167,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8cd48561e0ca94498fb7aacda1e26df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  randomSeed: 69
   resourcePrefab: {fileID: 3858072093232548404, guid: 4dc7ec01430a6b1428c119cebb99837a,
     type: 3}
-  blueBeePrefab: {fileID: 3858072093232548404, guid: f5e24fdf1bc7b7b408851819d8697ec2,
-    type: 3}
-  yellowBeePrefab: {fileID: 3858072093232548404, guid: 4b46197f3ee49394fa94442063c77dc5,
-    type: 3}
-  resourceSpawnCount: 250
-  blueBeeSpawnCount: 250
-  yellowBeeSpawnCount: 250
+  resourceSpawnCount: 50
   resourceFieldPosition:
     x: 0
-    y: 0
-    z: 0
-  blueBeeFieldPosition:
-    x: 10
-    y: 0
-    z: 0
-  yellowBeeFieldPosition:
-    x: -10
     y: 0
     z: 0
   resourceFieldDimensions:
     x: 4
     y: 0
     z: 4
+  blueBeePrefab: {fileID: 3858072093232548404, guid: f5e24fdf1bc7b7b408851819d8697ec2,
+    type: 3}
+  blueBeeSpawnCount: 100
+  blueBeeFieldPosition:
+    x: 20
+    y: 0
+    z: 0
   blueBeeFieldDimensions:
     x: 4
     y: 10
     z: 4
+  yellowBeePrefab: {fileID: 3858072093232548404, guid: 4b46197f3ee49394fa94442063c77dc5,
+    type: 3}
+  yellowBeeSpawnCount: 100
+  yellowBeeFieldPosition:
+    x: -20
+    y: 0
+    z: 0
   yellowBeeFieldDimensions:
     x: 4
     y: 10
     z: 4
-  randomSeed: 69

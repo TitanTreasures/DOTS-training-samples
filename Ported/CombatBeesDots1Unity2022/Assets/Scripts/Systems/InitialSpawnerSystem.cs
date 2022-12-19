@@ -1,15 +1,8 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
-using Unity.Mathematics;
-using Unity.Rendering;
 using Unity.Transforms;
-using UnityEditor.PackageManager;
-using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
 
 
 [BurstCompile]
@@ -18,6 +11,8 @@ using static UnityEngine.EventSystems.EventTrigger;
 // Maybe rename to "InitialSpawnerSystem" or something like that
 public partial struct InitialSpawnerSystem : ISystem
 {
+    Entity bee;
+
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
@@ -44,7 +39,7 @@ public partial struct InitialSpawnerSystem : ISystem
             Entity entity = ecb.Instantiate(spawnerAspect.resourceSpawnPrefab);
             var newTransform = spawnerAspect.GetSpawnTransform(spawnerAspect.resourceSpawnPrefab);
             ecb.SetComponent(entity, new LocalTransform { Position = newTransform.Position, Rotation = newTransform.Rotation, Scale = newTransform.Scale });
-            ecb.SetComponent(entity, new RandomComponent { randomValue = Unity.Mathematics.Random.CreateFromIndex(Convert.ToUInt32(i)) });
+
         }
 
         for (int i = 0; i < spawnerAspect.blueBeeSpawnCount; i++)
@@ -53,6 +48,8 @@ public partial struct InitialSpawnerSystem : ISystem
             var newTransform = spawnerAspect.GetSpawnTransform(spawnerAspect.blueBeeSpawnPrefab);
             ecb.SetComponent(entity, new LocalTransform { Position = newTransform.Position, Rotation = newTransform.Rotation, Scale = newTransform.Scale });
             ecb.SetComponent(entity, new RandomComponent { randomValue = Unity.Mathematics.Random.CreateFromIndex(Convert.ToUInt32(i)) });
+            ecb.SetComponentEnabled(entity, typeof(BeeCarryingTag), false);
+            ecb.SetComponentEnabled(entity, typeof(BeeAttackingTag), false);
         }
 
         for (int i = 0; i < spawnerAspect.yellowBeeSpawnCount; i++)
@@ -60,6 +57,9 @@ public partial struct InitialSpawnerSystem : ISystem
             Entity entity = ecb.Instantiate(spawnerAspect.yellowBeeSpawnPrefab);
             var newTransform = spawnerAspect.GetSpawnTransform(spawnerAspect.yellowBeeSpawnPrefab);
             ecb.SetComponent(entity, new LocalTransform { Position = newTransform.Position, Rotation = newTransform.Rotation, Scale = newTransform.Scale });
+            ecb.SetComponent(entity, new RandomComponent { randomValue = Unity.Mathematics.Random.CreateFromIndex(Convert.ToUInt32(i)) });
+            ecb.SetComponentEnabled(entity, typeof(BeeCarryingTag), false);
+            ecb.SetComponentEnabled(entity, typeof(BeeAttackingTag), false);
         }
         ecb.Playback(state.EntityManager);
     }

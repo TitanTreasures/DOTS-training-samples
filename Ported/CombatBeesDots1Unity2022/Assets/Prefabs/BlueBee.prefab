@@ -129,5 +129,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
-  flySpeed: 10
+  flySpeed: 1
   randomSeed: 10

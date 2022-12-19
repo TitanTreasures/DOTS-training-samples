@@ -16,7 +16,7 @@ public readonly partial struct ResourceAspect : IAspect
 
     public float3 GetResourcePosition()
     {
-        return _transformAspect.Position;
+        return _transformAspect.LocalPosition;
         //float3 direction = math.normalize( targetPosition.ValueRW.value - transformAspect.Position);
         //_transformAspect.Position += direction * deltaTime * speed.ValueRO.value;
     }
