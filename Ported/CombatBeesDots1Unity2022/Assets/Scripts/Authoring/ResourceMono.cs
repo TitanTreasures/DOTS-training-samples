@@ -19,9 +19,9 @@ public class ResourceBaker : Baker<ResourceMono>
         {
             holder = authoring.holder
         });
-        AddComponent(new TargetResourceComponent
-        {
-            targetResource = authoring.targetResource
-        });
+        //AddComponent(new TargetResourceComponent
+        //{
+        //    targetResource = authoring.targetResource
+        //});
     }
 }

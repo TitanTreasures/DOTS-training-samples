@@ -9,6 +9,7 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEditor.PackageManager;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 
 [BurstCompile]
 public partial struct BeeToResourceSystem : ISystem
@@ -19,6 +20,21 @@ public partial struct BeeToResourceSystem : ISystem
     EntityQuery carryingQuery;
     EntityQuery attackingQuery;
 
+
+    DynamicBuffer<MyBufferElement> buffer;
+    Entity e;
+    EntityQuery resourceQuery;
+
+    public struct MyBufferElement : IBufferElementData
+    {
+        // These implicit conversions are optional, but can help reduce typing.
+        //public static implicit operator int(MyBufferElement e) { return e.Value; }
+        //public static implicit operator MyBufferElement(int e) { return new MyBufferElement { Value = e }; }
+
+        // Actual value each buffer element will store.
+        public float3 Pos;
+    }
+
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
@@ -26,6 +42,14 @@ public partial struct BeeToResourceSystem : ISystem
         seekingQuery = state.GetEntityQuery(ComponentType.ReadOnly<BeeSeekingTag>());
         carryingQuery = state.GetEntityQuery(ComponentType.ReadOnly<BeeCarryingTag>());
         attackingQuery = state.GetEntityQuery(ComponentType.ReadOnly<BeeAttackingTag>());
+
+        resourceQuery = state.GetEntityQuery(ComponentType.ReadOnly<TargetResourceComponent>());
+
+
+        e = state.EntityManager.CreateEntity(typeof(MyBufferElement));
+        //state.EntityManager.AddBuffer<MyBufferElement>(e);
+        
+
     }
 
     [BurstCompile]
@@ -37,6 +61,21 @@ public partial struct BeeToResourceSystem : ISystem
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
+        // query for e in other systems
+        buffer = state.EntityManager.GetBuffer<MyBufferElement>(e);
+        foreach (var resourceAspect in SystemAPI.Query<TransformAspect>().WithAll<ResourceTag>())
+        {
+            Debug.Log(resourceAspect.LocalPosition);
+            var element = new MyBufferElement
+            {
+                Pos = resourceAspect.LocalPosition
+            };
+            buffer.Append(element);
+        }
+        Debug.Log(buffer.Length);
+
+        Debug.Log("First element:" + buffer[0]);
+
         var deltaTime = SystemAPI.Time.DeltaTime;
         var ecb = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>();
 
