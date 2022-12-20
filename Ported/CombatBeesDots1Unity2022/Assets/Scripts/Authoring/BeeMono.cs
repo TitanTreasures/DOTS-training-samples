@@ -22,11 +22,11 @@ public class BeeBaker : Baker<BeeMono>
 
         if (authoring.team == 0)
         {
-            AddComponent(new BlueBeeTag());
+            AddComponent(new BeeBlueTag());
         }
         else if(authoring.team == 1)
         {
-            AddComponent(new YellowBeeTag());
+            AddComponent(new BeeYellowTag());
         }
         AddComponent(new BeePropertiesComponent
         {

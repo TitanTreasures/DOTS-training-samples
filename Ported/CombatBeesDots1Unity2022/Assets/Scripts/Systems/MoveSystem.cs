@@ -12,7 +12,7 @@ using UnityEngine;
 using static UnityEngine.EventSystems.EventTrigger;
 
 [BurstCompile]
-public partial struct BeeToResourceSystem : ISystem
+public partial struct MoveSystem : ISystem
 {
     public Unity.Mathematics.Random random;
 
@@ -48,7 +48,7 @@ public partial struct BeeToResourceSystem : ISystem
 
         e = state.EntityManager.CreateEntity(typeof(MyBufferElement));
         //state.EntityManager.AddBuffer<MyBufferElement>(e);
-        
+
 
     }
 
@@ -63,18 +63,19 @@ public partial struct BeeToResourceSystem : ISystem
     {
         // query for e in other systems
         buffer = state.EntityManager.GetBuffer<MyBufferElement>(e);
+        if (buffer.Length > 0)
+        {
+            Debug.Log(buffer.Length);
+        }
         foreach (var resourceAspect in SystemAPI.Query<TransformAspect>().WithAll<ResourceTag>())
         {
-            Debug.Log(resourceAspect.LocalPosition);
+            //Debug.Log(resourceAspect.LocalPosition);
             var element = new MyBufferElement
             {
                 Pos = resourceAspect.LocalPosition
             };
-            buffer.Append(element);
+            buffer.Add(element);
         }
-        Debug.Log(buffer.Length);
-
-        Debug.Log("First element:" + buffer[0]);
 
         var deltaTime = SystemAPI.Time.DeltaTime;
         var ecb = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>();
