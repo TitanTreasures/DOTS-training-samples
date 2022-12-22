@@ -16,7 +16,9 @@ public partial struct InitialSpawnerSystem : ISystem
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
+        // Disabling the system ensures it runs only once... For some reason...
         state.RequireForUpdate<SpawnerComponent>();
+        state.Enabled = false;
     }
     [BurstCompile]
     public void OnDestroy(ref SystemState state)
@@ -26,8 +28,6 @@ public partial struct InitialSpawnerSystem : ISystem
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        // Disabling the system ensures it runs only once... For some reason...
-        state.Enabled = false;
         // Using temp for the ecb, because it is cheapest (Disposes at the same frame)
         var ecb = new EntityCommandBuffer(Allocator.Temp);
 
@@ -39,7 +39,6 @@ public partial struct InitialSpawnerSystem : ISystem
             Entity entity = ecb.Instantiate(spawnerAspect.resourceSpawnPrefab);
             var newTransform = spawnerAspect.GetSpawnTransform(spawnerAspect.resourceSpawnPrefab);
             ecb.SetComponent(entity, new LocalTransform { Position = newTransform.Position, Rotation = newTransform.Rotation, Scale = newTransform.Scale });
-
         }
 
         for (int i = 0; i < spawnerAspect.blueBeeSpawnCount; i++)
@@ -62,5 +61,6 @@ public partial struct InitialSpawnerSystem : ISystem
             ecb.SetComponentEnabled(entity, typeof(BeeAttackingTag), false);
         }
         ecb.Playback(state.EntityManager);
+
     }
 }

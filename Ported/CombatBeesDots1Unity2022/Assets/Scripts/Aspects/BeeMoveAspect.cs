@@ -5,17 +5,16 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 
-public readonly partial struct BeeMoveToResourceAspect : IAspect
+public readonly partial struct BeeMoveAspect : IAspect
 {
     public readonly Entity entity;
 
-    private readonly TransformAspect _transformAspect;
+    public readonly TransformAspect _transformAspect;
     private readonly RefRO<BeePropertiesComponent> _beePropertiesComponent;
 
     private readonly RefRW<RandomComponent> _randomComponent;
 
-    // Inside the job that will eventually work with this, remove resource component when done
-    // to ensure the system is not acting on that bee entity anymore
+
 
     private float flySpeed => _beePropertiesComponent.ValueRO.flySpeed;
     //private Entity targetResource => _targetResourceComponent.ValueRO.targetResource;
@@ -30,6 +29,11 @@ public readonly partial struct BeeMoveToResourceAspect : IAspect
     public bool IsInPickupRange(float3 resourcePos, float resourceRadiusSq)
     {
         return math.distancesq(resourcePos, _transformAspect.LocalPosition) <= resourceRadiusSq;
+    }
+
+    public float GetDistanceToTarget(float3 target)
+    {
+        return math.distancesq(target, _transformAspect.LocalPosition);
     }
 
     public int GetRandomResourceIndex(int resourcesAmount)
