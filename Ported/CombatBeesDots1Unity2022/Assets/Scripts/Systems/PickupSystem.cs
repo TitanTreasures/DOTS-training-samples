@@ -70,7 +70,7 @@ public partial struct PickupSystem : ISystem
             if (bee.GetDistanceToTarget(closest) > 2f)
             {
                 ECB.SetComponentEnabled<BeeReadyToPickupTag>(sortKey, bee.entity, false);
-                ECB.SetComponentEnabled<BeeIdle>(sortKey, bee.entity, true);
+                ECB.SetComponentEnabled<BeeIdleTag>(sortKey, bee.entity, true);
             }
         }
     }

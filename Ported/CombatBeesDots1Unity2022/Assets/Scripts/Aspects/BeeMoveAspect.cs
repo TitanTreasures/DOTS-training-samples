@@ -40,4 +40,9 @@ public readonly partial struct BeeAspect : IAspect
     {
         return _randomComponent.ValueRW.randomValue.NextInt(resourcesAmount);
     }
+
+    public int GetRandomBeeState(int amountOfPossibleBeeStates)
+    {
+        return _randomComponent.ValueRW.randomValue.NextInt(amountOfPossibleBeeStates);
+    }
 }

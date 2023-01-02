@@ -17,6 +17,7 @@ public class BeeBaker : Baker<BeeMono>
 {
     public override void Bake(BeeMono authoring)
     {
+        AddComponent(new BeeIdleTag());
         AddComponent(new BeeSeekingTag());
         AddComponent(new BeeCarryingTag());
         AddComponent(new BeeAttackingTag());
