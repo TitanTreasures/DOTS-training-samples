@@ -58,7 +58,7 @@ public partial struct BeeBehaviourSystem : ISystem
         public EntityCommandBuffer.ParallelWriter ECB;
         public int AmountOfBeeStates;
 
-        private void Execute(BeeMoveAspect bee, [EntityIndexInQuery] int sortKey)
+        private void Execute(BeeAspect bee, [EntityIndexInQuery] int sortKey)
         {
             var randomBeeStateIndex = bee.GetRandomBeeState(AmountOfBeeStates);
 
