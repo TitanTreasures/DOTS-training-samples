@@ -49,6 +49,7 @@ public partial struct InitialSpawnerSystem : ISystem
             ecb.SetComponent(entity, new RandomComponent { randomValue = Unity.Mathematics.Random.CreateFromIndex(Convert.ToUInt32(i)) });
             ecb.SetComponentEnabled(entity, typeof(BeeCarryingTag), false);
             ecb.SetComponentEnabled(entity, typeof(BeeAttackingTag), false);
+            //ecb.SetComponentEnabled(entity, typeof(BeeIdleTag), true);
         }
 
         for (int i = 0; i < spawnerAspect.yellowBeeSpawnCount; i++)
@@ -59,6 +60,7 @@ public partial struct InitialSpawnerSystem : ISystem
             ecb.SetComponent(entity, new RandomComponent { randomValue = Unity.Mathematics.Random.CreateFromIndex(Convert.ToUInt32(i)) });
             ecb.SetComponentEnabled(entity, typeof(BeeCarryingTag), false);
             ecb.SetComponentEnabled(entity, typeof(BeeAttackingTag), false);
+            //ecb.SetComponentEnabled(entity, typeof(BeeIdleTag), true);
         }
         ecb.Playback(state.EntityManager);
 

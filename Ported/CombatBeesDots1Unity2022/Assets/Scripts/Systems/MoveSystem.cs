@@ -59,11 +59,13 @@ public partial struct MoveSystem : ISystem
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
+        state.Enabled = false;
+
         // query for e in other systems
         buffer = state.EntityManager.GetBuffer<ResourcePositionElementBuffer>(e);
         if (buffer.Length > 0)
         {
-            Debug.Log(buffer.Length);
+            //Debug.Log(buffer.Length);
         }
         foreach (var resourceAspect in SystemAPI.Query<TransformAspect>().WithAll<ResourceTag>())
         {
