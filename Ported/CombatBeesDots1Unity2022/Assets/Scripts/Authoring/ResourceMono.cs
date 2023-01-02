@@ -17,7 +17,7 @@ public class ResourceBaker : Baker<ResourceMono>
 
         AddComponent(new ResourcePropertiesComponent
         {
-            holder = authoring.holder
+            currentBeeHolder = authoring.holder
         });
         //AddComponent(new TargetResourceComponent
         //{

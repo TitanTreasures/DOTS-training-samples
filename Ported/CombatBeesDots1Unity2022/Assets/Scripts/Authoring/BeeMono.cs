@@ -8,6 +8,7 @@ public class BeeMono : MonoBehaviour
 {
     public int team;
     public float flySpeed;
+    public float pickupRadius;
 
     // For randomness
     public uint randomSeed;

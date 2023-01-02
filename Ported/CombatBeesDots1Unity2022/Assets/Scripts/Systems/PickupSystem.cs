@@ -24,7 +24,7 @@ public partial struct PickupSystem : ISystem
     public void OnCreate(ref SystemState state)
     {
         random = Unity.Mathematics.Random.CreateFromIndex(1);
-        beeReadyToPickupQuery = state.GetEntityQuery(ComponentType.ReadOnly<BeeReadyToPickup>());
+        beeReadyToPickupQuery = state.GetEntityQuery(ComponentType.ReadOnly<BeeReadyToPickupTag>());
     }
 
     [BurstCompile]
@@ -58,7 +58,7 @@ public partial struct PickupSystem : ISystem
         public EntityCommandBuffer.ParallelWriter ECB;
 
         [BurstCompile]
-        private void Execute(BeeMoveAspect bee, [EntityIndexInQuery] int sortKey)
+        private void Execute(BeeAspect bee, [EntityIndexInQuery] int sortKey)
         {
             float closestResourcePos = 99f;
             float3 closest = float3.zero;
@@ -69,7 +69,7 @@ public partial struct PickupSystem : ISystem
             }
             if (bee.GetDistanceToTarget(closest) > 2f)
             {
-                ECB.SetComponentEnabled<BeeReadyToPickup>(sortKey, bee.entity, false);
+                ECB.SetComponentEnabled<BeeReadyToPickupTag>(sortKey, bee.entity, false);
                 ECB.SetComponentEnabled<BeeIdle>(sortKey, bee.entity, true);
             }
         }

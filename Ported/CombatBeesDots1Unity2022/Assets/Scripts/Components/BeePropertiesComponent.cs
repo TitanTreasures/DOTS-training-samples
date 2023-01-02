@@ -8,6 +8,7 @@ public struct BeePropertiesComponent : IComponentData
 {
     public float flySpeed;
     public Entity enemyTarget;
+    public float pickupRange;
 }
 
 public struct BeeGoingToResourceTag : IComponentData { }

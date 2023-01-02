@@ -6,5 +6,5 @@ using UnityEngine;
 
 public struct ResourcePropertiesComponent : IComponentData
 {
-    public Entity holder;
+    public Entity currentBeeHolder;
 }

@@ -5,7 +5,7 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 
-public readonly partial struct BeeMoveAspect : IAspect
+public readonly partial struct BeeAspect : IAspect
 {
     public readonly Entity entity;
 
@@ -19,7 +19,7 @@ public readonly partial struct BeeMoveAspect : IAspect
     private float flySpeed => _beePropertiesComponent.ValueRO.flySpeed;
     //private Entity targetResource => _targetResourceComponent.ValueRO.targetResource;
 
-    public void FlyToResource(float deltaTime, float3 targetResourcePosition)
+    public void MoveTo(float deltaTime, float3 targetResourcePosition)
     {
         //Debug.Log(targetResourcePosition);
         float3 direction = math.normalize(targetResourcePosition - _transformAspect.LocalPosition);
