@@ -18,7 +18,6 @@ public partial struct InitialSpawnerSystem : ISystem
     {
         // Disabling the system ensures it runs only once... For some reason...
         state.RequireForUpdate<SpawnerComponent>();
-        state.Enabled = false;
     }
     [BurstCompile]
     public void OnDestroy(ref SystemState state)
@@ -28,6 +27,7 @@ public partial struct InitialSpawnerSystem : ISystem
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
+        state.Enabled = false;
         // Using temp for the ecb, because it is cheapest (Disposes at the same frame)
         var ecb = new EntityCommandBuffer(Allocator.Temp);
 
