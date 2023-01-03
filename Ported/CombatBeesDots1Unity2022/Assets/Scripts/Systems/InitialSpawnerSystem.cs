@@ -73,9 +73,9 @@ public partial struct InitialSpawnerSystem : ISystem
             ecb.SetComponentEnabled(parentEntity, typeof(BeeAttackingTag), false);
 
             Entity childEntity = ecb.Instantiate(spawnerAspect.resourceSpawnPrefab);
-            var newTransform = spawnerAspect.GetSpawnTransform(spawnerAspect.resourceSpawnPrefab);
-            ecb.SetComponent(childEntity, new LocalTransform { Position = newTransform.Position, Rotation = newTransform.Rotation, Scale = newTransform.Scale });
-            ecb.SetComponent(childEntity, new ResourcePropertiesComponent { currentBeeHolderPosition = newTransform1.Position });
+            //var newTransform = spawnerAspect.GetSpawnTransform(spawnerAspect.resourceSpawnPrefab);
+            ecb.SetComponent(childEntity, new LocalTransform { Position = newTransform1.Position, Rotation = newTransform1.Rotation, Scale = newTransform1.Scale });
+            //ecb.SetComponent(childEntity, new ResourcePropertiesComponent { currentBeeHolderPosition = newTransform1.Position });
             ecb.SetComponentEnabled(childEntity, typeof(ResourceBeingCarriedTag), true); 
         }
 
