@@ -19,6 +19,8 @@ public class ResourceBaker : Baker<ResourceMono>
         {
             currentBeeHolder = authoring.holder
         });
+
+        AddComponent(new ResourceReadyForPickUpTag());
         //AddComponent(new TargetResourceComponent
         //{
         //    targetResource = authoring.targetResource

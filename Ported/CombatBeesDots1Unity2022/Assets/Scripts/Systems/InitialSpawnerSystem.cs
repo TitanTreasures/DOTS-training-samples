@@ -8,7 +8,6 @@ using Unity.Transforms;
 [BurstCompile]
 // This is done to make this system part of the group that is handled before others
 [UpdateInGroup(typeof(InitializationSystemGroup))]
-// Maybe rename to "InitialSpawnerSystem" or something like that
 public partial struct InitialSpawnerSystem : ISystem
 {
     Entity bee;
