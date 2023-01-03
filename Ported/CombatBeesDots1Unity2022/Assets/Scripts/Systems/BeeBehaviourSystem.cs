@@ -63,7 +63,7 @@ public partial struct BeeBehaviourSystem : ISystem
                     ecb.SetComponentEnabled(entity, typeof(BeeAttackingTag), false);
 
                     myBuff = state.EntityManager.GetBuffer<ResourcePositionElementBuffer>(bufferEntity);
-                    ecb.SetComponent<BeeTargetPositionComponent>(entity, new BeeTargetPositionComponent { targetPosition = myBuff.ElementAt(random.NextInt(myBuff.Length)).Pos });
+                    //ecb.SetComponent<BeeTargetPositionComponent>(entity, new BeeTargetPositionComponent { targetPosition = myBuff.ElementAt(random.NextInt(myBuff.Length)).Pos });
                     ecb.SetComponentEnabled(entity, typeof(BeeSeekingTag), true);
                     break;
             }
@@ -71,44 +71,5 @@ public partial struct BeeBehaviourSystem : ISystem
         }
 
         ecb.Playback(state.EntityManager);
-
-        //var ecb = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>();
-
-        //new AssignBeeActivityJob
-        //{
-        //    resourceBuffer = resourceBuffer,
-        //    ECB = ecb.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter(),
-        //    AmountOfBeeStates = 2
-        //}.ScheduleParallel(idleQuery);
     }
-
-    //public partial struct AssignBeeActivityJob : IJobEntity
-    //{
-    //    public DynamicBuffer<ResourcePositionElementBuffer> resourceBuffer;
-    //    public EntityCommandBuffer.ParallelWriter ECB;
-    //    public int AmountOfBeeStates;
-
-    //    private void Execute(BeeAspect bee, [EntityIndexInQuery] int sortKey)
-    //    {
-    //        var randomBeeStateIndex = bee.GetRandomBeeState(AmountOfBeeStates);
-
-    //        switch (randomBeeStateIndex)
-    //        {
-    //            case 0:
-    //                // This is not necessary, but is included to help with testing
-    //                ECB.SetComponentEnabled<BeeSeekingTag>(sortKey, bee.entity, false);
-
-    //                ECB.SetComponentEnabled<BeeAttackingTag>(sortKey, bee.entity, true);
-    //                break;
-    //            case 1:
-    //                // This is not necessary, but is included to help with testing
-    //                ECB.SetComponentEnabled<BeeAttackingTag>(sortKey, bee.entity, false);
-
-    //                ECB.SetComponent<BeeTargetPositionComponent>(sortKey, bee.entity, new BeeTargetPositionComponent { targetPosition = resourceBuffer.ElementAt(bee.GetRandomResourceIndex(resourceBuffer.Length)).Pos });
-    //                ECB.SetComponentEnabled<BeeSeekingTag>(sortKey, bee.entity, true);
-    //                break;
-    //        }
-    //        ECB.SetComponentEnabled<BeeIdleTag>(sortKey, bee.entity, false);
-    //    }
-    //}
 }

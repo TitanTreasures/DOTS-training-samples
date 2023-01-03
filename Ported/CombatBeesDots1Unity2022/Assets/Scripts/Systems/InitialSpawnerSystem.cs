@@ -69,15 +69,15 @@ public partial struct InitialSpawnerSystem : ISystem
             var newTransform1 = spawnerAspect.GetSpawnTransform(spawnerAspect.yellowBeeSpawnPrefab);
             ecb.SetComponent(parentEntity, new LocalTransform { Position = newTransform1.Position, Rotation = newTransform1.Rotation, Scale = newTransform1.Scale });
             ecb.SetComponent(parentEntity, new RandomComponent { randomValue = Unity.Mathematics.Random.CreateFromIndex(Convert.ToUInt32(i)) });
-            ecb.SetComponentEnabled(parentEntity, typeof(BeeCarryingTag), false);
+            ecb.SetComponentEnabled(parentEntity, typeof(BeeCarryingTag), true);
             ecb.SetComponentEnabled(parentEntity, typeof(BeeAttackingTag), false);
 
             Entity childEntity = ecb.Instantiate(spawnerAspect.resourceSpawnPrefab);
             var newTransform = spawnerAspect.GetSpawnTransform(spawnerAspect.resourceSpawnPrefab);
             ecb.SetComponent(childEntity, new LocalTransform { Position = newTransform.Position, Rotation = newTransform.Rotation, Scale = newTransform.Scale });
             ecb.SetComponent(childEntity, new ResourcePropertiesComponent { currentBeeHolderPosition = newTransform1.Position });
+            ecb.SetComponentEnabled(childEntity, typeof(ResourceBeingCarriedTag), true); 
         }
-
 
         // DEBUG SECTION -----------------------------------------------
 

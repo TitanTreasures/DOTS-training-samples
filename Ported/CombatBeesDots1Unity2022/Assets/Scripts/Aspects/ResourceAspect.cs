@@ -24,7 +24,7 @@ public readonly partial struct ResourceAspect : IAspect
     public void FollowTarget()
     {
         float3 entityPos = _resourceComponent.ValueRO.currentBeeHolderPosition;
-        _transformAspect.LocalPosition = entityPos + new float3(0,-1,0);
+        _transformAspect.LocalPosition = entityPos + new float3(0,-3,0);
         
     }
 }
