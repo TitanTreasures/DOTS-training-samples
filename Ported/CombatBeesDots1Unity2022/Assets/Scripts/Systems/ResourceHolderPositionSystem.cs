@@ -35,26 +35,26 @@ public partial struct ResourceHolderPositionSystem : ISystem
         foreach (var (resourceTransformAspect, resourceEntity) in SystemAPI.Query<TransformAspect>().WithAll<ResourceBeingCarriedTag>().WithEntityAccess())
         {
             resources++;
-            float3 closestBeePosition;
-            closestBeePosition = new float3(1000.0f, 1000.0f, 1000.0f);
+            float4 closestBee;
+            closestBee = new float4(1000.0f, 1000.0f, 1000.0f, 1000.0f);
             bees = 0;
 
             foreach (var (beeTransformAspect, beeEntity) in SystemAPI.Query<TransformAspect>().WithAll<BeeCarryingTag>().WithEntityAccess())
             {
                 bees++;
-                var currentDistance = math.distancesq(resourceTransformAspect.LocalPosition, beeTransformAspect.LocalPosition);
-                //Debug.Log("Current bee dis: " + currentDistance);
-                var closestDistance = math.distancesq(resourceTransformAspect.LocalPosition, closestBeePosition);
-                //Debug.Log("Closest bee dis: " + closestDistance);
+                var currentDistance = math.distancesq(resourceTransformAspect.WorldPosition, beeTransformAspect.WorldPosition);
 
-                if (currentDistance < closestDistance)
+                if (currentDistance < closestBee.w)
                 {
-                    closestBeePosition = beeTransformAspect.LocalPosition;
+                    closestBee = new float4(beeTransformAspect.WorldPosition.x,
+                        beeTransformAspect.WorldPosition.y,
+                        beeTransformAspect.WorldPosition.z,
+                        currentDistance);
 
                 }
             }
-            Debug.Log(closestBeePosition);
-            ecb.SetComponent<ResourcePropertiesComponent>(resourceEntity, new ResourcePropertiesComponent { currentBeeHolderPosition = closestBeePosition });
+            Debug.Log(closestBee.xyz);
+            ecb.SetComponent<ResourcePropertiesComponent>(resourceEntity, new ResourcePropertiesComponent { currentBeeHolderPosition = closestBee.xyz });
             
         }
         ecb.Playback(state.EntityManager);
