@@ -23,19 +23,9 @@ public partial struct MoveSystem : ISystem
     EntityQuery resourceFollowQuery;
 
 
-    public static DynamicBuffer<ResourcePositionElementBuffer> buffer;
+    
     Entity e;
     EntityQuery resourceQuery;
-
-    public struct ResourcePositionElementBuffer : IBufferElementData
-    {
-        // These implicit conversions are optional, but can help reduce typing.
-        //public static implicit operator int(MyBufferElement e) { return e.Value; }
-        //public static implicit operator MyBufferElement(int e) { return new MyBufferElement { Value = e }; }
-
-        // Actual value each buffer element will store.
-        public float3 Pos;
-    }
 
     [BurstCompile]
     public void OnCreate(ref SystemState state)
@@ -45,11 +35,7 @@ public partial struct MoveSystem : ISystem
         carryingQuery = state.GetEntityQuery(ComponentType.ReadOnly<BeeCarryingTag>());
         attackingQuery = state.GetEntityQuery(ComponentType.ReadOnly<BeeAttackingTag>());
         resourceBeingCarriedQuery = state.GetEntityQuery(ComponentType.ReadOnly<ResourceBeingCarriedTag>());
-        resourceQuery = state.GetEntityQuery(typeof(LocalTransform), ComponentType.ReadOnly<TargetResourceComponent>());
-
-        e = state.EntityManager.CreateEntity(typeof(ResourcePositionElementBuffer));
-
-        
+        resourceQuery = state.GetEntityQuery(ComponentType.ReadOnly<TargetResourceComponent>());
     }
 
     [BurstCompile]
@@ -61,23 +47,6 @@ public partial struct MoveSystem : ISystem
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        // TODO: THIS BUFFER IS ADDING RESOURCES INDEFINATELY
-        // query for e in other systems
-        buffer = state.EntityManager.GetBuffer<ResourcePositionElementBuffer>(e);
-        if (buffer.Length > 0)
-        {
-            //Debug.Log(buffer.Length);
-        }
-        foreach (var resourceAspect in SystemAPI.Query<TransformAspect>().WithAll<ResourceTag>())
-        {
-            //Debug.Log(resourceAspect.LocalPosition);
-            var element = new ResourcePositionElementBuffer
-            {
-                Pos = resourceAspect.LocalPosition
-            };
-            buffer.Add(element);
-        }
-
         var deltaTime = SystemAPI.Time.DeltaTime;
         var ecb = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>();
 
@@ -93,14 +62,11 @@ public partial struct MoveSystem : ISystem
             ECB = ecb.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
         }.ScheduleParallel(carryingQuery);
 
-        var job = new ResourceFollowJob
+        new ResourceFollowJob
         {
             DeltaTime = deltaTime,
             ECB = ecb.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
-
-        };
-
-        job.ScheduleParallel(resourceBeingCarriedQuery);
+        }.ScheduleParallel(resourceBeingCarriedQuery);
     }
 
     [BurstCompile]
@@ -112,10 +78,10 @@ public partial struct MoveSystem : ISystem
         [BurstCompile]
         private void Execute(BeeAspect bee, [EntityIndexInQuery] int sortKey)
         {
-            bee.MoveTo(DeltaTime, float3.zero);
+            bee.MoveTo(DeltaTime);
             if (bee.IsInPickupRange(float3.zero, 1f))
             {
-                ECB.SetComponentEnabled<BeeReadyToPickupTag>(sortKey, bee.entity, true);
+                //ECB.SetComponentEnabled<BeeReadyToPickupTag>(sortKey, bee.entity, true);
                 ECB.SetComponentEnabled<BeeSeekingTag>(sortKey, bee.entity, false);
             }
         }
@@ -130,7 +96,7 @@ public partial struct MoveSystem : ISystem
         [BurstCompile]
         private void Execute(BeeAspect bee, [EntityIndexInQuery] int sortKey)
         {
-            bee.MoveTo(DeltaTime, BasePos);
+            bee.MoveTo(DeltaTime);
             if (bee.IsInPickupRange(BasePos, 1f))
             {
                 ECB.SetComponentEnabled<BeeSeekingTag>(sortKey, bee.entity, true);

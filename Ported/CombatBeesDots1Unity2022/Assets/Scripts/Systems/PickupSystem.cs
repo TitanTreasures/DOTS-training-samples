@@ -10,7 +10,7 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEditor.PackageManager;
 using UnityEngine;
-using static MoveSystem;
+using static ResourcePositionBufferSystem;
 using static UnityEditor.Rendering.FilterWindow;
 using static UnityEngine.EventSystems.EventTrigger;
 
@@ -40,7 +40,8 @@ public partial struct PickupSystem : ISystem
         var deltaTime = SystemAPI.Time.DeltaTime;
         var ecb = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>();
 
-        var resourceBuffer = buffer;
+        var e = SystemAPI.GetSingletonEntity<ResourcePosBufferTag>();
+        var resourceBuffer = state.EntityManager.GetBuffer<ResourcePositionElementBuffer>(e);
 
         new BeePickupJob
         {

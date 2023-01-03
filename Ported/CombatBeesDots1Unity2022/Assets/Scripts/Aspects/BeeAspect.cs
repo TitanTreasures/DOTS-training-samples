@@ -11,18 +11,20 @@ public readonly partial struct BeeAspect : IAspect
 
     public readonly TransformAspect _transformAspect;
     private readonly RefRO<BeePropertiesComponent> _beePropertiesComponent;
+    private readonly RefRO<BeeTargetPositionComponent> _targetPositionComponent;
 
     private readonly RefRW<RandomComponent> _randomComponent;
 
 
 
     private float flySpeed => _beePropertiesComponent.ValueRO.flySpeed;
+    private float3 targetPosition => _targetPositionComponent.ValueRO.targetPosition;
     //private Entity targetResource => _targetResourceComponent.ValueRO.targetResource;
 
-    public void MoveTo(float deltaTime, float3 targetResourcePosition)
+    public void MoveTo(float deltaTime)
     {
         //Debug.Log(targetResourcePosition);
-        float3 direction = math.normalize(targetResourcePosition - _transformAspect.LocalPosition);
+        float3 direction = math.normalize(targetPosition - _transformAspect.LocalPosition);
         //Debug.Log("Bee Position" + _transformAspect.Position);
         _transformAspect.LocalPosition += direction * deltaTime * flySpeed;
     }

@@ -129,5 +129,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
-  flySpeed: 1
+  flySpeed: 5
+  pickupRadius: 0
+  targetPosition:
+    x: 0
+    y: 0
+    z: 0
   randomSeed: 10
