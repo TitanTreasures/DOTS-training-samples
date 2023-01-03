@@ -23,14 +23,8 @@ public readonly partial struct ResourceAspect : IAspect
     }
     public void FollowTarget()
     {
-        Entity entity = _resourceComponent.ValueRO.currentBeeHolder;
-        //Debug.Log(targetResourcePosition);
-        //float3 direction = math.normalize((targetPosition + new float3(0,-1,0)) - _transformAspect.LocalPosition);
-        //Debug.Log("Bee Position" + _transformAspect.Position);
-        //_transformAspect.LocalPosition += direction * deltaTime * 1;
-
-        // Resource follow movement is simple, set the resource position to underneath the bee
-        //_transformAspect.LocalPosition = _resourceComponent.ValueRO.currentBeeHolder + new float3(0,-1,0);
+        float3 entityPos = _resourceComponent.ValueRO.currentBeeHolderPosition;
+        _transformAspect.LocalPosition = entityPos + new float3(0,-1,0);
         
     }
 }

@@ -45,7 +45,7 @@ public partial struct MoveSystem : ISystem
         carryingQuery = state.GetEntityQuery(ComponentType.ReadOnly<BeeCarryingTag>());
         attackingQuery = state.GetEntityQuery(ComponentType.ReadOnly<BeeAttackingTag>());
         resourceBeingCarriedQuery = state.GetEntityQuery(ComponentType.ReadOnly<ResourceBeingCarriedTag>());
-        resourceQuery = state.GetEntityQuery(ComponentType.ReadOnly<TargetResourceComponent>());
+        resourceQuery = state.GetEntityQuery(typeof(LocalTransform), ComponentType.ReadOnly<TargetResourceComponent>());
 
         e = state.EntityManager.CreateEntity(typeof(ResourcePositionElementBuffer));
 
@@ -93,11 +93,14 @@ public partial struct MoveSystem : ISystem
             ECB = ecb.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
         }.ScheduleParallel(carryingQuery);
 
-        new ResourceFollowJob
+        var job = new ResourceFollowJob
         {
             DeltaTime = deltaTime,
             ECB = ecb.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
-        }.ScheduleParallel(resourceBeingCarriedQuery);
+
+        };
+
+        job.ScheduleParallel(resourceBeingCarriedQuery);
     }
 
     [BurstCompile]
@@ -142,7 +145,7 @@ public partial struct MoveSystem : ISystem
         public EntityCommandBuffer.ParallelWriter ECB;
 
         [BurstCompile]
-        private void Execute(ResourceAspect resource, [EntityIndexInQuery] int sortKey)
+        private void Execute(ResourceAspect resource)
         {
             resource.FollowTarget();
         }

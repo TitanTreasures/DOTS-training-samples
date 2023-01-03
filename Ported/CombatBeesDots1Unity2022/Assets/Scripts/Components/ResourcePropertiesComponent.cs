@@ -7,4 +7,5 @@ using UnityEngine;
 public struct ResourcePropertiesComponent : IComponentData
 {
     public Entity currentBeeHolder;
+    public float3 currentBeeHolderPosition;
 }

@@ -10,5 +10,3 @@ public struct BeePropertiesComponent : IComponentData
     public Entity enemyTarget;
     public float pickupRange;
 }
-
-public struct BeeGoingToResourceTag : IComponentData { }
