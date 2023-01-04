@@ -39,10 +39,9 @@ public partial struct InitialSpawnerSystem : ISystem
             Entity entity = ecb.Instantiate(spawnerAspect.resourceSpawnPrefab);
             var newTransform = spawnerAspect.GetSpawnTransform(spawnerAspect.resourceSpawnPrefab);
             ecb.SetComponent(entity, new LocalTransform { Position = newTransform.Position, Rotation = newTransform.Rotation, Scale = newTransform.Scale });
-            ecb.SetComponentEnabled(entity, typeof(ResourceBeingCarriedTag), false);
-            ecb.AddComponent(entity, typeof(ResourceDoesNotExistInBufferTag));
-            //ecb.SetComponentEnabled(entity, typeof(ResourceReadyForPickUpTag), true);
+            SetResourceTagComponents(ecb,entity);
         }
+
         for (int i = 0; i < spawnerAspect.blueBeeSpawnCount; i++)
         {
             Entity entity = ecb.Instantiate(spawnerAspect.blueBeeSpawnPrefab);
@@ -50,10 +49,7 @@ public partial struct InitialSpawnerSystem : ISystem
             ecb.SetComponent(entity, new LocalTransform { Position = newTransform.Position, Rotation = newTransform.Rotation, Scale = newTransform.Scale });
             ecb.SetComponent(entity, new RandomComponent { randomValue = Unity.Mathematics.Random.CreateFromIndex(Convert.ToUInt32(i)) });
             ecb.AddComponent(entity, new BeeSpawnLocationComponent { basePosition = newTransform.Position });
-            ecb.SetComponentEnabled(entity, typeof(BeeCarryingTag), false);
-            ecb.SetComponentEnabled(entity, typeof(BeeAttackingTag), false);
-            ecb.SetComponentEnabled(entity, typeof(BeeReadyToPickupTag), false);
-            //ecb.SetComponentEnabled(entity, typeof(BeeIdleTag), true);
+            SetBeeTagComponents(ecb, entity);
         }
 
         for (int i = 0; i < spawnerAspect.yellowBeeSpawnCount; i++)
@@ -63,10 +59,7 @@ public partial struct InitialSpawnerSystem : ISystem
             ecb.SetComponent(entity, new LocalTransform { Position = newTransform.Position, Rotation = newTransform.Rotation, Scale = newTransform.Scale });
             ecb.SetComponent(entity, new RandomComponent { randomValue = Unity.Mathematics.Random.CreateFromIndex(Convert.ToUInt32(i)) });
             ecb.AddComponent(entity, new BeeSpawnLocationComponent { basePosition = newTransform.Position });
-            ecb.SetComponentEnabled(entity, typeof(BeeCarryingTag), false);
-            ecb.SetComponentEnabled(entity, typeof(BeeAttackingTag), false);
-            ecb.SetComponentEnabled(entity, typeof(BeeReadyToPickupTag), false);
-            //ecb.SetComponentEnabled(entity, typeof(BeeIdleTag), true);
+            SetBeeTagComponents(ecb,entity);
         }
 
         // DEBUG SECTION -----------------------------------------------
@@ -90,5 +83,32 @@ public partial struct InitialSpawnerSystem : ISystem
 
         ecb.Playback(state.EntityManager);
 
+    }
+
+    public void SetBeeTagComponents(EntityCommandBuffer ecb, Entity entity) {
+        ecb.AddComponent(entity, typeof(BeeIdleTag));
+        ecb.AddComponent(entity, typeof(BeeSeekingTag));
+        ecb.AddComponent(entity, typeof(BeeCarryingTag));
+        ecb.AddComponent(entity, typeof(BeeAttackingTag));
+        ecb.AddComponent(entity, typeof(BeeReadyToPickupTag));
+
+        ecb.SetComponentEnabled(entity, typeof(BeeIdleTag), true);
+        ecb.SetComponentEnabled(entity, typeof(BeeSeekingTag), false);
+        ecb.SetComponentEnabled(entity, typeof(BeeCarryingTag), false);
+        ecb.SetComponentEnabled(entity, typeof(BeeAttackingTag), false);
+        ecb.SetComponentEnabled(entity, typeof(BeeReadyToPickupTag), false);
+    }
+
+    public void SetResourceTagComponents(EntityCommandBuffer ecb, Entity entity)
+    {
+        ecb.AddComponent(entity, typeof(ResourceTag));
+        ecb.AddComponent(entity, typeof(ResourceBeingCarriedTag));
+        ecb.AddComponent(entity, typeof(ResourceReadyForPickUpTag));
+        ecb.AddComponent(entity, typeof(ResourceDoesNotExistInBufferTag));
+
+        ecb.SetComponentEnabled(entity, typeof(ResourceTag), true);
+        ecb.SetComponentEnabled(entity, typeof(ResourceBeingCarriedTag), false);
+        ecb.SetComponentEnabled(entity, typeof(ResourceReadyForPickUpTag), true);
+        ecb.SetComponentEnabled(entity, typeof(ResourceDoesNotExistInBufferTag), true);
     }
 }
