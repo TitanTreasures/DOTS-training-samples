@@ -44,6 +44,6 @@ public readonly partial struct ResourceAspect : IAspect
 
     public void DroppingMovement(float dt)
     {
-        _transformAspect.LocalPosition += new float3() * _resourceComponent.ValueRO.droppingSpeed * dt;
+        _transformAspect.LocalPosition += new float3(0, -1, 0) * _resourceComponent.ValueRO.droppingSpeed * dt;
     }
 }
