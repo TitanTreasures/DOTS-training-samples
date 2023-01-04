@@ -38,7 +38,7 @@ public partial struct MoveSystem : ISystem
         attackingQuery = state.GetEntityQuery(ComponentType.ReadOnly<BeeAttackingTag>());
         resourceBeingCarriedQuery = state.GetEntityQuery(ComponentType.ReadOnly<ResourceBeingCarriedTag>());
         resourceTargetQuery = state.GetEntityQuery(ComponentType.ReadOnly<TargetResourceComponent>());
-        resourceDroppingQuery = state.GetEntityQuery(ComponentType.ReadOnly<TargetResourceComponent>());
+        resourceDroppingQuery = state.GetEntityQuery(ComponentType.ReadOnly<ResourceDroppingTag>());
     }
 
     [BurstCompile]
@@ -145,6 +145,7 @@ public partial struct MoveSystem : ISystem
 
             if (resource.HasHitGround())
             {
+                Debug.Log(DeltaTime);
                 if (resource.IsInBaseLocationRange())
                 {
                     ECB.SetComponentEnabled<ResourceDroppingTag>(sortKey, resource.entity, false);

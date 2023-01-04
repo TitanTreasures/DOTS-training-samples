@@ -8,7 +8,7 @@ using static UnityEngine.EventSystems.EventTrigger;
 public class ResourceMono : MonoBehaviour
 {
     public float3 targetPosition;
-    public float droppingSpeed = 5f;
+    public float droppingSpeed;
 }
 public class ResourceBaker : Baker<ResourceMono>
 {

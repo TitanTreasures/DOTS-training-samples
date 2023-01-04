@@ -54,7 +54,10 @@ public partial struct ResourceHolderPositionSystem : ISystem
                         closestBeePosition = beeTransformAspect.LocalPosition;
                     }
                 }
-                spa.SetComponentData<ResourcePropertiesComponent>(resourceEntity, new ResourcePropertiesComponent { currentBeeHolderPosition = closestBeePosition });
+                var cool = spa.GetComponentData<ResourcePropertiesComponent>(resourceEntity);
+                cool.currentBeeHolderPosition = closestBeePosition;
+                spa.SetComponentData(resourceEntity, cool);
+                
             }
         }
     }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
@@ -15,6 +16,8 @@ public readonly partial struct ResourceAspect : IAspect
     // TargetResourceComponent added to hopefully only have the aspect apply to resources
     //private readonly RefRO<TargetResourceComponent> _targetResourceComponent;
     private readonly RefRO<ResourcePropertiesComponent> _resourceComponent;
+
+    private float dropSpeed => _resourceComponent.ValueRO.droppingSpeed;
 
     public float3 GetResourcePosition()
     {
@@ -44,6 +47,6 @@ public readonly partial struct ResourceAspect : IAspect
 
     public void DroppingMovement(float dt)
     {
-        _transformAspect.LocalPosition += new float3(0, -1, 0) * _resourceComponent.ValueRO.droppingSpeed * dt;
+        _transformAspect.LocalPosition += new float3(0, -1, 0) * dt * _resourceComponent.ValueRO.droppingSpeed;
     }
 }

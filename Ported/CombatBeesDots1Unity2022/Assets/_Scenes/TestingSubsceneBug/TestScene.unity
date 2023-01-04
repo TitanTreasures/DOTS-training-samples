@@ -228,20 +228,20 @@ MonoBehaviour:
   blueBeeSpawnCount: 100
   blueBeeFieldPosition:
     x: 20
-    y: 0
+    y: 20
     z: 0
   blueBeeFieldDimensions:
     x: 4
-    y: 10
+    y: 22
     z: 4
   yellowBeePrefab: {fileID: 3858072093232548404, guid: 4b46197f3ee49394fa94442063c77dc5,
     type: 3}
   yellowBeeSpawnCount: 100
   yellowBeeFieldPosition:
     x: -20
-    y: 0
+    y: 20
     z: 0
   yellowBeeFieldDimensions:
     x: 4
-    y: 10
+    y: 22
     z: 4

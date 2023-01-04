@@ -57,6 +57,7 @@ public partial struct BeeBehaviourSystem : ISystem
                     ecb.SetComponentEnabled(entity, typeof(BeeSeekingTag), false);
 
                     ecb.SetComponentEnabled(entity, typeof(BeeAttackingTag), false);
+                    ecb.SetComponentEnabled(entity, typeof(BeeIdleTag), true);
                     break;
                 case 1:
                     // This is not necessary, but is included to help with testing
@@ -74,9 +75,8 @@ public partial struct BeeBehaviourSystem : ISystem
                     }
                     break;
             }
-            ecb.SetComponentEnabled(entity, typeof(BeeIdleTag), false);
+            //ecb.SetComponentEnabled(entity, typeof(BeeIdleTag), false);
         }
-
         ecb.Playback(state.EntityManager);
     }
 }
