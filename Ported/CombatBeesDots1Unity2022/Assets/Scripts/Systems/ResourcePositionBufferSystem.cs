@@ -27,6 +27,7 @@ public partial struct ResourcePositionBufferSystem : ISystem
 
         // Actual value each buffer element will store.
         public float3 Pos;
+        public Entity Resource;
     }
 
     public void OnCreate(ref SystemState state)
@@ -51,12 +52,24 @@ public partial struct ResourcePositionBufferSystem : ISystem
             //Debug.Log(resourceAspect.LocalPosition);
             var element = new ResourcePositionElementBuffer
             {
-                Pos = resourceTransformAspect.LocalPosition
+                Pos = resourceTransformAspect.LocalPosition,
+                Resource = entity 
             };
             buffer.Add(element);
 
             ecb.SetComponentEnabled(entity, typeof(ResourceDoesNotExistInBufferTag), false);
         }
+
+        foreach (var (resourceTransformAspect, entity) in SystemAPI.Query<TransformAspect>().WithAll<ResourceBeingCarriedTag>().WithEntityAccess())
+        {
+            for(int i = 0; i < buffer.Length; i++) { 
+                if(buffer.ElementAt(i).Resource.Equals(entity)) { 
+                    buffer.RemoveAt(i); 
+                }
+            }
+        }
         ecb.Playback(state.EntityManager);
+
+        
     }
 }
