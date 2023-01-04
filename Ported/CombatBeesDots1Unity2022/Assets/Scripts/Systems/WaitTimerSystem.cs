@@ -18,27 +18,12 @@ public partial struct WaitTimerSystem : ISystem
 {
     public Unity.Mathematics.Random random;
 
-    EntityQuery seekingQuery;
-    EntityQuery carryingQuery;
-    EntityQuery resourceBeingCarriedQuery;
-    EntityQuery attackingQuery;
-    EntityQuery resourceDroppingQuery;
-
-
-    
     Entity e;
-    EntityQuery resourceTargetQuery;
 
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
         random = Unity.Mathematics.Random.CreateFromIndex(1);
-        seekingQuery = state.GetEntityQuery(ComponentType.ReadOnly<BeeSeekingTag>());
-        carryingQuery = state.GetEntityQuery(ComponentType.ReadOnly<BeeCarryingTag>());
-        attackingQuery = state.GetEntityQuery(ComponentType.ReadOnly<BeeAttackingTag>());
-        resourceBeingCarriedQuery = state.GetEntityQuery(ComponentType.ReadOnly<ResourceBeingCarriedTag>());
-        resourceTargetQuery = state.GetEntityQuery(ComponentType.ReadOnly<TargetResourceComponent>());
-        resourceDroppingQuery = state.GetEntityQuery(ComponentType.ReadOnly<ResourceDroppingTag>());
     }
 
     [BurstCompile]
@@ -53,33 +38,15 @@ public partial struct WaitTimerSystem : ISystem
         var deltaTime = SystemAPI.Time.DeltaTime;
         var ecb = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>();
 
-        new BeeSeekingJob
+        new updateWaitTimerJob
         {
             DeltaTime = deltaTime,
             ECB = ecb.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
         }.ScheduleParallel(seekingQuery);
-
-        new BeeCarryingJob
-        {
-            DeltaTime = deltaTime,
-            ECB = ecb.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
-        }.ScheduleParallel(carryingQuery);
-
-        new ResourceFollowJob
-        {
-            DeltaTime = deltaTime,
-            ECB = ecb.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
-        }.ScheduleParallel(resourceBeingCarriedQuery);
-
-        new ResourceDroppingJob
-        {
-            DeltaTime = deltaTime,
-            ECB = ecb.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
-        }.ScheduleParallel(resourceDroppingQuery);
     }
 
     [BurstCompile]
-    public partial struct BeeSeekingJob : IJobEntity
+    public partial struct updateWaitTimerJob : IJobEntity
     {
         public float DeltaTime;
         public EntityCommandBuffer.ParallelWriter ECB;
