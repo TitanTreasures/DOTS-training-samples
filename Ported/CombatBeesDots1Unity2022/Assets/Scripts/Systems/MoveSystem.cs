@@ -96,7 +96,6 @@ public partial struct MoveSystem : ISystem
         }
     }
 
-    // TODO: LAV DET HER
     [BurstCompile]
     public partial struct BeeCarryingJob : IJobEntity
     {
@@ -145,7 +144,6 @@ public partial struct MoveSystem : ISystem
 
             if (resource.HasHitGround())
             {
-                Debug.Log(DeltaTime);
                 if (resource.IsInBaseLocationRange())
                 {
                     ECB.SetComponentEnabled<ResourceDroppingTag>(sortKey, resource.entity, false);

@@ -60,6 +60,7 @@ public partial struct PickupSystem : ISystem
                     spa.SetComponentEnabled<ResourceReadyForPickUpTag>(resourceentity, false);
                     spa.SetComponentEnabled<ResourceBeingCarriedTag>(resourceentity, true);
                     test = false;
+                    break;
                 }
             }
             if (test)

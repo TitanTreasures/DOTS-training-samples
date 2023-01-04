@@ -16,8 +16,6 @@ public partial struct BeeBehaviourSystem : ISystem
 {
     public Unity.Mathematics.Random random;
 
-    EntityQuery idleQuery;
-
     //private BufferLookup<ResourcePositionElementBuffer> _bufferLookup;
 
     //EntityQuery attackingQuery;
@@ -25,7 +23,6 @@ public partial struct BeeBehaviourSystem : ISystem
     public void OnCreate(ref SystemState state)
     {
         random = Unity.Mathematics.Random.CreateFromIndex(1);
-        idleQuery = state.GetEntityQuery(ComponentType.ReadOnly<BeeIdleTag>());
         //attackingQuery = state.GetEntityQuery(ComponentType.ReadOnly<BeeAttackingTag>());
         //seekingQuery = state.GetEntityQuery(ComponentType.ReadOnly<BeeSeekingTag>());
 

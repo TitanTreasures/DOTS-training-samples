@@ -214,7 +214,7 @@ MonoBehaviour:
   randomSeed: 69
   resourcePrefab: {fileID: 3858072093232548404, guid: 4dc7ec01430a6b1428c119cebb99837a,
     type: 3}
-  resourceSpawnCount: 50
+  resourceSpawnCount: 1000
   resourceFieldPosition:
     x: 0
     y: 10
