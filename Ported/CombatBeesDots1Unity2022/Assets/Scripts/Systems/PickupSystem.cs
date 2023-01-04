@@ -21,15 +21,10 @@ public partial struct PickupSystem : ISystem
 {
     public Unity.Mathematics.Random random;
 
-    EntityQuery beeReadyToPickupQuery;
-    //EntityQuery resourceReadyForPickUpQuery;
-    //EntityQuery combinedPickupQuery;
-
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
         random = Unity.Mathematics.Random.CreateFromIndex(1);
-        beeReadyToPickupQuery = state.GetEntityQuery(ComponentType.ReadOnly<BeeReadyToPickupTag>());
     }
 
     [BurstCompile]
@@ -53,7 +48,7 @@ public partial struct PickupSystem : ISystem
         {
             foreach (var (resourceTransformAspect, resourceentity) in SystemAPI.Query<TransformAspect>().WithAll<ResourceReadyForPickUpTag>().WithEntityAccess())
             {
-                if (bee.GetDistanceToTarget(resourceTransformAspect.WorldPosition) < bee.pickupRange * 2)
+                if (bee.GetDistanceToTarget(resourceTransformAspect.WorldPosition) < bee.resourceInteractionRange * 2)
                 {
                     spa.SetComponentEnabled<BeeReadyToPickupTag>(bee.entity, false);
                     spa.SetComponentEnabled<BeeCarryingTag>(bee.entity, true);
@@ -69,8 +64,6 @@ public partial struct PickupSystem : ISystem
                 spa.SetComponentEnabled<BeeIdleTag>(bee.entity, true);
             }
         }
-        
-
         //new BeePickupJob
         //{
         //    DeltaTime = deltaTime,

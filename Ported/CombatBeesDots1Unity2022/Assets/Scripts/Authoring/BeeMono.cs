@@ -9,8 +9,10 @@ public class BeeMono : MonoBehaviour
 {
     public int team;
     public float flySpeed;
-    public float pickupRadius;
+    public float resourceInteractionRange;
+    public float attackRadius;
     public float3 targetPosition;
+    public float3 enemyTargetPosition;
 
     // For randomness
     public uint randomSeed;
@@ -30,7 +32,8 @@ public class BeeBaker : Baker<BeeMono>
         AddComponent(new BeePropertiesComponent
         {
             flySpeed = authoring.flySpeed,
-            pickupRange = authoring.pickupRadius * authoring.pickupRadius
+            resourceInteractionRange = authoring.resourceInteractionRange * authoring.resourceInteractionRange,
+            attackRadius = authoring.attackRadius * authoring.attackRadius 
         });
         AddComponent(new RandomComponent
         {

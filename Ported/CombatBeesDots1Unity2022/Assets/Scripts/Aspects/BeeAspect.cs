@@ -21,8 +21,8 @@ public readonly partial struct BeeAspect : IAspect
     private float flySpeed => _beePropertiesComponent.ValueRO.flySpeed;
     private float3 targetPosition => _targetPositionComponent.ValueRO.targetPosition;
     private float3 basePosition => _spawnLocationComponent.ValueRO.basePosition;
-    public float pickupRange => _beePropertiesComponent.ValueRO.pickupRange;
-    //private Entity targetResource => _targetResourceComponent.ValueRO.targetResource;
+    public float resourceInteractionRange => _beePropertiesComponent.ValueRO.resourceInteractionRange;
+    public float attackRange => _beePropertiesComponent.ValueRO.attackRadius;
 
     public void MoveToBase(float deltaTime)
     {
@@ -39,13 +39,23 @@ public readonly partial struct BeeAspect : IAspect
         //Debug.Log("Bee Position" + _transformAspect.Position);
         _transformAspect.LocalPosition += direction * deltaTime * flySpeed;
     }
+    public bool TargetIsInAttackRange(float3 target)
+    {
+        if (math.distancesq(target, _transformAspect.LocalPosition) < attackRange)
+        {
+            return true;
+        } else
+        {
+            return false;
+        }
+    }
     public bool IsInPickupRange()
     {
-        return math.distancesq(targetPosition, _transformAspect.LocalPosition) <= pickupRange;
+        return math.distancesq(targetPosition, _transformAspect.LocalPosition) <= resourceInteractionRange;
     }
     public bool IsInSpawnLocationRange()
     {
-        return math.distancesq(basePosition, _transformAspect.LocalPosition) <= pickupRange;
+        return math.distancesq(basePosition, _transformAspect.LocalPosition) <= resourceInteractionRange;
     }
     public float GetDistanceToTarget(float3 target)
     {

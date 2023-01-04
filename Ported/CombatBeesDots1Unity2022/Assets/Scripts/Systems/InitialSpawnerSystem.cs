@@ -91,6 +91,7 @@ public partial struct InitialSpawnerSystem : ISystem
         ecb.AddComponent(entity, typeof(BeeCarryingTag));
         ecb.AddComponent(entity, typeof(BeeAttackingTag));
         ecb.AddComponent(entity, typeof(BeeReadyToPickupTag));
+        ecb.AddComponent(entity, typeof(WaitTimerComponent));
 
         ecb.SetComponentEnabled(entity, typeof(BeeIdleTag), true);
         ecb.SetComponentEnabled(entity, typeof(BeeSeekingTag), false);

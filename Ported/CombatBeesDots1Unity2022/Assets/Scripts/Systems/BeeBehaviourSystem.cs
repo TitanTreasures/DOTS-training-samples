@@ -15,18 +15,9 @@ using static UnityEngine.EventSystems.EventTrigger;
 public partial struct BeeBehaviourSystem : ISystem
 {
     public Unity.Mathematics.Random random;
-
-    //private BufferLookup<ResourcePositionElementBuffer> _bufferLookup;
-
-    //EntityQuery attackingQuery;
-    //EntityQuery seekingQuery;
     public void OnCreate(ref SystemState state)
     {
         random = Unity.Mathematics.Random.CreateFromIndex(1);
-        //attackingQuery = state.GetEntityQuery(ComponentType.ReadOnly<BeeAttackingTag>());
-        //seekingQuery = state.GetEntityQuery(ComponentType.ReadOnly<BeeSeekingTag>());
-
-        //_bufferLookup = state.GetBufferLookup<ResourcePositionElementBuffer>(true);
     }
 
     public void OnDestroy(ref SystemState state)
@@ -43,7 +34,7 @@ public partial struct BeeBehaviourSystem : ISystem
 
         DynamicBuffer<ResourcePositionElementBuffer> resourcePositionBuffer = state.EntityManager.GetBuffer<ResourcePositionElementBuffer>(bufferEntity);
 
-        foreach (var (tag, entity) in SystemAPI.Query<BeeIdleTag>().WithEntityAccess())
+        foreach (var (tag, entity) in SystemAPI.Query<BeeIdleTag>().WithNone<WaitTimerComponent>().WithEntityAccess())
         {
             var randomBeeStateIndex = random.NextInt(amountOfBeeStates);
             
@@ -53,8 +44,7 @@ public partial struct BeeBehaviourSystem : ISystem
                     // This is not necessary, but is included to help with testing
                     ecb.SetComponentEnabled(entity, typeof(BeeSeekingTag), false);
 
-                    ecb.SetComponentEnabled(entity, typeof(BeeAttackingTag), false);
-                    ecb.SetComponentEnabled(entity, typeof(BeeIdleTag), true);
+                    ecb.SetComponentEnabled(entity, typeof(BeeAttackingTag), true);
                     break;
                 case 1:
                     // This is not necessary, but is included to help with testing
@@ -72,7 +62,6 @@ public partial struct BeeBehaviourSystem : ISystem
                     }
                     break;
             }
-            //ecb.SetComponentEnabled(entity, typeof(BeeIdleTag), false);
         }
         ecb.Playback(state.EntityManager);
     }

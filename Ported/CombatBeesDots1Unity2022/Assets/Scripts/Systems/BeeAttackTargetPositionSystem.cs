@@ -28,27 +28,32 @@ public partial struct BeeAttackTargetPositionSystem : ISystem
     {
         EntityManager spa = state.EntityManager;
 
-        foreach (var (resourceTransformAspect, resourceEntity) in SystemAPI.Query<TransformAspect>().WithAll<BeeBlueTag>().WithAll<BeeAttackingTag>().WithEntityAccess())
+        foreach (var (blueTransformAspect, blueBeeEntity) in SystemAPI.Query<BeeAspect>().WithAll<BeeBlueTag>().WithAll<BeeAttackingTag>().WithEntityAccess())
         {
-            float3 closestBeePosition;
-            closestBeePosition = new float3(1000.0f, 1000.0f, 1000.0f);
+            float3 firstFoundEnemyBeePosition;
+            firstFoundEnemyBeePosition = new float3(100.0f, 100.0f, 100.0f);
 
-            float3 currentAdjustedResourcePos = new float3 (resourceTransformAspect.LocalPosition.x, resourceTransformAspect.LocalPosition.y + 3, resourceTransformAspect.LocalPosition.z);
-
-
-            foreach (var (beeTransformAspect, beeEntity) in SystemAPI.Query<TransformAspect>().WithAll<BeeCarryingTag>().WithEntityAccess())
+            foreach (var (yellowTransformAspect, beeEntity) in SystemAPI.Query<TransformAspect>().WithAll<BeeYellowTag>().WithEntityAccess())
             {
-                var currentDistance = math.distancesq(currentAdjustedResourcePos, beeTransformAspect.LocalPosition);
-                var closestDistance = math.distancesq(currentAdjustedResourcePos, closestBeePosition);
-
-                if (currentDistance < closestDistance)
+                if(blueTransformAspect.TargetIsInAttackRange(yellowTransformAspect.WorldPosition))
                 {
-                    closestBeePosition = beeTransformAspect.LocalPosition;
+                    firstFoundEnemyBeePosition = yellowTransformAspect.WorldPosition;
+                    Debug.Log(yellowTransformAspect.WorldPosition);
+                    break;
                 }
             }
-            var cool = spa.GetComponentData<ResourcePropertiesComponent>(resourceEntity);
-            cool.currentBeeHolderPosition = closestBeePosition;
-            spa.SetComponentData(resourceEntity, cool);
+
+            // No enemy bees were in range, so go back to idle and try again.
+            if(firstFoundEnemyBeePosition.x == 100.0f)
+            {
+                spa.SetComponentEnabled(blueBeeEntity, typeof(BeeAttackingTag), false);
+                spa.SetComponentEnabled(blueBeeEntity, typeof(BeeIdleTag), true);
+            } else
+            {
+                var cool = spa.GetComponentData<BeePropertiesComponent>(blueBeeEntity);
+                cool.enemyTargetPosition = firstFoundEnemyBeePosition;
+                spa.SetComponentData(blueBeeEntity, cool);
+            }
         }
     }
 }

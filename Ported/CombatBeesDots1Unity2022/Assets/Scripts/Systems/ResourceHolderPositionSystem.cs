@@ -39,7 +39,7 @@ public partial struct ResourceHolderPositionSystem : ISystem
             {
                 resources++;
                 float3 closestBeePosition;
-                closestBeePosition = new float3(1000.0f, 1000.0f, 1000.0f);
+                closestBeePosition = new float3(100.0f, 100.0f, 100.0f);
 
                 float3 currentAdjustedResourcePos = new float3 (resourceTransformAspect.LocalPosition.x, resourceTransformAspect.LocalPosition.y + 3, resourceTransformAspect.LocalPosition.z);
 

@@ -7,7 +7,8 @@ using UnityEngine;
 public struct BeePropertiesComponent : IComponentData
 {
     public float flySpeed;
-    public Entity enemyTarget;
-    public float pickupRange;
+    public float3 enemyTargetPosition;
+    public float resourceInteractionRange;
     public float3 basePosition;
+    public float attackRadius;
 }
