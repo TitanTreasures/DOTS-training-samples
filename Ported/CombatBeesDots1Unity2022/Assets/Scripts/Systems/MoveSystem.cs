@@ -154,6 +154,7 @@ public partial struct MoveSystem : ISystem
                 {
                     ECB.SetComponentEnabled<ResourceDroppingTag>(sortKey, resource.entity, false);
                     ECB.SetComponentEnabled<ResourceReadyForPickUpTag>(sortKey, resource.entity, true);
+                    ECB.SetComponentEnabled<ResourceDoesNotExistInBufferTag>(sortKey, resource.entity, true);
                 }
             }
         }
