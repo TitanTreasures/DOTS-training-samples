@@ -29,8 +29,6 @@ public partial struct ResourceHolderPositionSystem : ISystem
     {
         EntityManager spa = state.EntityManager;
 
-        //var ecb = new EntityCommandBuffer(Allocator.Temp);
-
         float3 test = new float3(0.0f, 0.0f, 0.0f);
 
         var resources = 0;
@@ -49,9 +47,7 @@ public partial struct ResourceHolderPositionSystem : ISystem
                 foreach (var (beeTransformAspect, beeEntity) in SystemAPI.Query<TransformAspect>().WithAll<BeeCarryingTag>().WithEntityAccess())
                 {
                     var currentDistance = math.distancesq(currentAdjustedResourcePos, beeTransformAspect.LocalPosition);
-                    //Debug.Log("Current bee dis: " + currentDistance);
                     var closestDistance = math.distancesq(currentAdjustedResourcePos, closestBeePosition);
-                    //Debug.Log("Closest bee dis: " + closestDistance);
 
                     if (currentDistance < closestDistance)
                     {
@@ -59,30 +55,7 @@ public partial struct ResourceHolderPositionSystem : ISystem
                     }
                 }
                 spa.SetComponentData<ResourcePropertiesComponent>(resourceEntity, new ResourcePropertiesComponent { currentBeeHolderPosition = closestBeePosition });
-                //ecb.SetComponent<ResourcePropertiesComponent>(resourceEntity, new ResourcePropertiesComponent { currentBeeHolderPosition = closestBeePosition });
-                //var element = new ResourceBeePair
-                //{
-                //    BeePos = closestBeePosition,
-                //    Resource = resourceEntity
-                //};
-
-                //buffer.Add(element);
             }
         }
-
-        //ecb.Playback(state.EntityManager);
-
-        //
-
-        //for(int i = 0; i < buffer.Length - 1; i++)
-        //{
-        //    Debug.Log("Test" + i + ": " + buffer.ElementAt(i).BeePos);
-        //    ecb.SetComponent<ResourcePropertiesComponent>(buffer.ElementAt(i).Resource, new ResourcePropertiesComponent { currentBeeHolderPosition = buffer.ElementAt(i).BeePos });
-        //    //spa.SetComponentData<ResourcePropertiesComponent>(buffer.ElementAt(i).Resource, new ResourcePropertiesComponent { currentBeeHolderPosition = buffer.ElementAt(i).BeePos });
-        //    buffer.RemoveAt(i);
-        //}
-        //ecb.Playback(state.EntityManager);
-        //ecb.SetComponent<ResourcePropertiesComponent>(resourceEntity, new ResourcePropertiesComponent { currentBeeHolderPosition = closestBeePosition });
-
     }
 }

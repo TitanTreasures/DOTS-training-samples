@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Unity.Burst;
 using Unity.Burst.Intrinsics;
@@ -40,44 +41,54 @@ public partial struct PickupSystem : ISystem
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        var deltaTime = SystemAPI.Time.DeltaTime;
-        var ecb = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>();
+        //var deltaTime = SystemAPI.Time.DeltaTime;
+        //var ecb = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>();
 
 
-        new BeePickupJob
+        EntityManager spa = state.EntityManager;
+
+        bool test = true;
+
+        foreach (var (bee, beeEntity) in SystemAPI.Query<BeeAspect>().WithAll<BeeReadyToPickupTag>().WithEntityAccess())
         {
-            DeltaTime = deltaTime,
-            ECB = ecb.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
-        }.ScheduleParallel(beeReadyToPickupQuery);
-    }
-
-    [BurstCompile]
-    public partial struct BeePickupJob : IJobEntity
-    {
-        public float DeltaTime;
-        public float3 targetPos;
-        public EntityCommandBuffer.ParallelWriter ECB;
-
-        [BurstCompile]
-        private void Execute(BeeAspect bee, [EntityIndexInQuery] int sortKey)
-        {
-            bool test = true;
-            foreach(var (resourceTransformAspect, resourceentity) in SystemAPI.Query<TransformAspect>().WithAll<ResourceReadyForPickUpTag>().WithEntityAccess())
+            foreach (var (resourceTransformAspect, resourceentity) in SystemAPI.Query<TransformAspect>().WithAll<ResourceReadyForPickUpTag>().WithEntityAccess())
             {
                 if (bee.GetDistanceToTarget(resourceTransformAspect.WorldPosition) < bee.pickupRange * 2)
                 {
-                    ECB.SetComponentEnabled<BeeReadyToPickupTag>(sortKey, bee.entity, false);
-                    ECB.SetComponentEnabled<BeeCarryingTag>(sortKey, bee.entity, true);
-                    //ECB.SetComponentEnabled<ResourceReadyForPickUpTag>(sortKey, resourceentity, false);
-                    ECB.SetComponentEnabled<ResourceBeingCarriedTag>(sortKey, resourceentity, true);
+                    spa.SetComponentEnabled<BeeReadyToPickupTag>(bee.entity, false);
+                    spa.SetComponentEnabled<BeeCarryingTag>(bee.entity, true);
+                    spa.SetComponentEnabled<ResourceReadyForPickUpTag>(resourceentity, false);
+                    spa.SetComponentEnabled<ResourceBeingCarriedTag>(resourceentity, true);
                     test = false;
-                } 
+                }
             }
             if (test)
             {
-                ECB.SetComponentEnabled<BeeReadyToPickupTag>(sortKey, bee.entity, false);
-                ECB.SetComponentEnabled<BeeIdleTag>(sortKey, bee.entity, true);
+                spa.SetComponentEnabled<BeeReadyToPickupTag>(bee.entity, false);
+                spa.SetComponentEnabled<BeeIdleTag>(bee.entity, true);
             }
         }
+        
+
+        //new BeePickupJob
+        //{
+        //    DeltaTime = deltaTime,
+        //    ECB = ecb.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
+        //}.ScheduleParallel(beeReadyToPickupQuery);
     }
+
+    //[BurstCompile]
+    //public partial struct BeePickupJob : IJobEntity
+    //{
+    //    public float DeltaTime;
+    //    public float3 targetPos;
+    //    public EntityCommandBuffer.ParallelWriter ECB;
+
+    //    [BurstCompile]
+    //    private void Execute(BeeAspect bee, [EntityIndexInQuery] int sortKey)
+    //    {
+    //        bool test = true;
+            
+    //    }
+    //}
 }

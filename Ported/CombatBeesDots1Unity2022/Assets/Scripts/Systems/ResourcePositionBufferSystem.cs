@@ -46,7 +46,7 @@ public partial struct ResourcePositionBufferSystem : ISystem
         e = SystemAPI.GetSingletonEntity<ResourcePosBufferTag>();
         var buffer = state.EntityManager.AddBuffer<ResourcePositionElementBuffer>(e);
 
-        foreach (var (resourceTransformAspect, entity) in SystemAPI.Query<TransformAspect>().WithAll<ResourceReadyForPickUpTag>().WithEntityAccess())
+        foreach (var (resourceTransformAspect, entity) in SystemAPI.Query<TransformAspect>().WithAll<ResourceDoesNotExistInBufferTag>().WithEntityAccess())
         {
             //Debug.Log(resourceAspect.LocalPosition);
             var element = new ResourcePositionElementBuffer
@@ -55,7 +55,7 @@ public partial struct ResourcePositionBufferSystem : ISystem
             };
             buffer.Add(element);
 
-            ecb.SetComponentEnabled(entity, typeof(ResourceReadyForPickUpTag), false);
+            ecb.SetComponentEnabled(entity, typeof(ResourceDoesNotExistInBufferTag), false);
         }
         ecb.Playback(state.EntityManager);
     }

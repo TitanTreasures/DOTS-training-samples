@@ -40,6 +40,7 @@ public partial struct InitialSpawnerSystem : ISystem
             var newTransform = spawnerAspect.GetSpawnTransform(spawnerAspect.resourceSpawnPrefab);
             ecb.SetComponent(entity, new LocalTransform { Position = newTransform.Position, Rotation = newTransform.Rotation, Scale = newTransform.Scale });
             ecb.SetComponentEnabled(entity, typeof(ResourceBeingCarriedTag), false);
+            ecb.AddComponent(entity, typeof(ResourceDoesNotExistInBufferTag));
             //ecb.SetComponentEnabled(entity, typeof(ResourceReadyForPickUpTag), true);
         }
         for (int i = 0; i < spawnerAspect.blueBeeSpawnCount; i++)
