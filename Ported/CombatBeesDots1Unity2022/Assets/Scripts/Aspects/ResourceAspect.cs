@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
@@ -25,6 +26,24 @@ public readonly partial struct ResourceAspect : IAspect
     {
         float3 entityPos = _resourceComponent.ValueRO.currentBeeHolderPosition;
         _transformAspect.LocalPosition = entityPos + new float3(0,-3,0);
-        
+    }
+
+    public bool IsInBaseLocationRange()
+    {
+        if (_transformAspect.LocalPosition.x >= (20 - 4) || _transformAspect.LocalPosition.x <= (-20 + 4))
+            return true;
+        return false;
+    }
+
+    public bool HasHitGround()
+    {
+        if (_transformAspect.LocalPosition.y <= 0)
+            return true;
+        return false;
+    }
+
+    public void DroppingMovement(float dt)
+    {
+        _transformAspect.LocalPosition += new float3() * _resourceComponent.ValueRO.droppingSpeed * dt;
     }
 }

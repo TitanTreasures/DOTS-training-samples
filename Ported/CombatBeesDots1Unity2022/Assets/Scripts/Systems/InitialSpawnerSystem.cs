@@ -105,10 +105,14 @@ public partial struct InitialSpawnerSystem : ISystem
         ecb.AddComponent(entity, typeof(ResourceBeingCarriedTag));
         ecb.AddComponent(entity, typeof(ResourceReadyForPickUpTag));
         ecb.AddComponent(entity, typeof(ResourceDoesNotExistInBufferTag));
+        ecb.AddComponent(entity, typeof(ResourceDroppingTag));
+        ecb.AddComponent(entity, typeof(ResourceDespawnTag));
 
         ecb.SetComponentEnabled(entity, typeof(ResourceTag), true);
         ecb.SetComponentEnabled(entity, typeof(ResourceBeingCarriedTag), false);
         ecb.SetComponentEnabled(entity, typeof(ResourceReadyForPickUpTag), true);
         ecb.SetComponentEnabled(entity, typeof(ResourceDoesNotExistInBufferTag), true);
+        ecb.SetComponentEnabled(entity, typeof(ResourceDroppingTag), false);
+        ecb.SetComponentEnabled(entity, typeof(ResourceDespawnTag), false);
     }
 }

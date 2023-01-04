@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Unity.Burst;
 using Unity.Collections;
@@ -21,12 +22,12 @@ public partial struct MoveSystem : ISystem
     EntityQuery carryingQuery;
     EntityQuery resourceBeingCarriedQuery;
     EntityQuery attackingQuery;
-    EntityQuery resourceFollowQuery;
+    EntityQuery resourceDroppingQuery;
 
 
     
     Entity e;
-    EntityQuery resourceQuery;
+    EntityQuery resourceTargetQuery;
 
     [BurstCompile]
     public void OnCreate(ref SystemState state)
@@ -36,7 +37,8 @@ public partial struct MoveSystem : ISystem
         carryingQuery = state.GetEntityQuery(ComponentType.ReadOnly<BeeCarryingTag>());
         attackingQuery = state.GetEntityQuery(ComponentType.ReadOnly<BeeAttackingTag>());
         resourceBeingCarriedQuery = state.GetEntityQuery(ComponentType.ReadOnly<ResourceBeingCarriedTag>());
-        resourceQuery = state.GetEntityQuery(ComponentType.ReadOnly<TargetResourceComponent>());
+        resourceTargetQuery = state.GetEntityQuery(ComponentType.ReadOnly<TargetResourceComponent>());
+        resourceDroppingQuery = state.GetEntityQuery(ComponentType.ReadOnly<TargetResourceComponent>());
     }
 
     [BurstCompile]
@@ -68,6 +70,12 @@ public partial struct MoveSystem : ISystem
             DeltaTime = deltaTime,
             ECB = ecb.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
         }.ScheduleParallel(resourceBeingCarriedQuery);
+
+        new ResourceDroppingJob
+        {
+            DeltaTime = deltaTime,
+            ECB = ecb.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
+        }.ScheduleParallel(resourceDroppingQuery);
     }
 
     [BurstCompile]
@@ -114,9 +122,40 @@ public partial struct MoveSystem : ISystem
         public EntityCommandBuffer.ParallelWriter ECB;
 
         [BurstCompile]
-        private void Execute(ResourceAspect resource)
+        private void Execute(ResourceAspect resource, [EntityIndexInQuery] int sortKey)
         {
             resource.FollowTarget();
+            if (resource.IsInBaseLocationRange())
+            {
+                ECB.SetComponentEnabled<ResourceBeingCarriedTag>(sortKey, resource.entity, false);
+                ECB.SetComponentEnabled<ResourceDroppingTag>(sortKey, resource.entity, true);
+            }
+        }
+    }
+    [BurstCompile]
+    public partial struct ResourceDroppingJob : IJobEntity
+    {
+        public float DeltaTime;
+        public EntityCommandBuffer.ParallelWriter ECB;
+
+        [BurstCompile]
+        private void Execute(ResourceAspect resource, [EntityIndexInQuery] int sortKey)
+        {
+            resource.DroppingMovement(DeltaTime);
+
+            if (resource.HasHitGround())
+            {
+                if (resource.IsInBaseLocationRange())
+                {
+                    ECB.SetComponentEnabled<ResourceDroppingTag>(sortKey, resource.entity, false);
+                    ECB.SetComponentEnabled<ResourceDespawnTag>(sortKey, resource.entity, true);
+                }
+                else
+                {
+                    ECB.SetComponentEnabled<ResourceDroppingTag>(sortKey, resource.entity, false);
+                    ECB.SetComponentEnabled<ResourceReadyForPickUpTag>(sortKey, resource.entity, true);
+                }
+            }
         }
     }
 }

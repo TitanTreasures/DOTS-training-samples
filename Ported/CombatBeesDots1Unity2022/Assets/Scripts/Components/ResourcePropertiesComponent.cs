@@ -8,4 +8,5 @@ public struct ResourcePropertiesComponent : IComponentData
 {
     public Entity currentBeeHolder;
     public float3 currentBeeHolderPosition;
+    public float droppingSpeed;
 }
