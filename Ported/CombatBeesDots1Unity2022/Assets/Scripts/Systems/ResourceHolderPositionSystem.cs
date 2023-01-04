@@ -28,24 +28,19 @@ public partial struct ResourceHolderPositionSystem : ISystem
     {
         var ecb = new EntityCommandBuffer(Allocator.Temp);
 
-
         var resources = 0;
-        var bees = 0;
 
         foreach (var (resourceTransformAspect, resourceEntity) in SystemAPI.Query<TransformAspect>().WithAll<ResourceBeingCarriedTag>().WithEntityAccess())
         {
             resources++;
             float3 closestBeePosition;
             closestBeePosition = new float3(1000.0f, 1000.0f, 1000.0f);
-            bees = 0;
+            float3 adjustedResourcePosition = new float3(resourceTransformAspect.LocalPosition.x, resourceTransformAspect.LocalPosition.y + 3, resourceTransformAspect.LocalPosition.z);
 
             foreach (var (beeTransformAspect, beeEntity) in SystemAPI.Query<TransformAspect>().WithAll<BeeCarryingTag>().WithEntityAccess())
             {
-                bees++;
-                var currentDistance = math.distancesq(resourceTransformAspect.LocalPosition, beeTransformAspect.LocalPosition);
-                //Debug.Log("Current bee dis: " + currentDistance);
-                var closestDistance = math.distancesq(resourceTransformAspect.LocalPosition, closestBeePosition);
-                //Debug.Log("Closest bee dis: " + closestDistance);
+                var currentDistance = math.distancesq(adjustedResourcePosition, beeTransformAspect.LocalPosition);
+                var closestDistance = math.distancesq(adjustedResourcePosition, closestBeePosition);
 
                 if (currentDistance < closestDistance)
                 {
