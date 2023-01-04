@@ -63,7 +63,7 @@ public partial struct BeeBehaviourSystem : ISystem
                     ecb.SetComponentEnabled(entity, typeof(BeeAttackingTag), false);
 
                     myBuff = state.EntityManager.GetBuffer<ResourcePositionElementBuffer>(bufferEntity);
-                    //ecb.SetComponent<BeeTargetPositionComponent>(entity, new BeeTargetPositionComponent { targetPosition = myBuff.ElementAt(random.NextInt(myBuff.Length)).Pos });
+                    ecb.SetComponent<BeeTargetPositionComponent>(entity, new BeeTargetPositionComponent { targetPosition = myBuff.ElementAt(random.NextInt(myBuff.Length)).Pos });
                     ecb.SetComponentEnabled(entity, typeof(BeeSeekingTag), true);
                     break;
             }

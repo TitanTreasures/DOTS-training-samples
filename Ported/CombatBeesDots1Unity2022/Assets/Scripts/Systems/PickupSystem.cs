@@ -9,6 +9,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEditor.PackageManager;
+using UnityEditorInternal;
 using UnityEngine;
 using static ResourcePositionBufferSystem;
 using static UnityEditor.Rendering.FilterWindow;
@@ -20,6 +21,8 @@ public partial struct PickupSystem : ISystem
     public Unity.Mathematics.Random random;
 
     EntityQuery beeReadyToPickupQuery;
+    //EntityQuery resourceReadyForPickUpQuery;
+    //EntityQuery combinedPickupQuery;
 
     [BurstCompile]
     public void OnCreate(ref SystemState state)
@@ -40,13 +43,10 @@ public partial struct PickupSystem : ISystem
         var deltaTime = SystemAPI.Time.DeltaTime;
         var ecb = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>();
 
-        var e = SystemAPI.GetSingletonEntity<ResourcePosBufferTag>();
-        var resourceBuffer = state.EntityManager.GetBuffer<ResourcePositionElementBuffer>(e);
 
         new BeePickupJob
         {
             DeltaTime = deltaTime,
-            resourceBuffer = resourceBuffer,
             ECB = ecb.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
         }.ScheduleParallel(beeReadyToPickupQuery);
     }
@@ -55,21 +55,25 @@ public partial struct PickupSystem : ISystem
     public partial struct BeePickupJob : IJobEntity
     {
         public float DeltaTime;
-        public DynamicBuffer<ResourcePositionElementBuffer> resourceBuffer;
         public float3 targetPos;
         public EntityCommandBuffer.ParallelWriter ECB;
 
         [BurstCompile]
         private void Execute(BeeAspect bee, [EntityIndexInQuery] int sortKey)
         {
-            float closestResourcePos = 99f;
-            float3 closest = float3.zero;
-            foreach(var element in resourceBuffer)
+            bool test = true;
+            foreach(var (resourceTransformAspect, resourceentity) in SystemAPI.Query<TransformAspect>().WithAll<ResourceReadyForPickUpTag>().WithEntityAccess())
             {
-                if (bee.GetDistanceToTarget(element.Pos) < closestResourcePos)
-                    closest = element.Pos;
+                if (bee.GetDistanceToTarget(resourceTransformAspect.WorldPosition) < bee.pickupRange * 2)
+                {
+                    ECB.SetComponentEnabled<BeeReadyToPickupTag>(sortKey, bee.entity, false);
+                    ECB.SetComponentEnabled<BeeCarryingTag>(sortKey, bee.entity, true);
+                    //ECB.SetComponentEnabled<ResourceReadyForPickUpTag>(sortKey, resourceentity, false);
+                    ECB.SetComponentEnabled<ResourceBeingCarriedTag>(sortKey, resourceentity, true);
+                    test = false;
+                } 
             }
-            if (bee.GetDistanceToTarget(closest) > 2f)
+            if (test)
             {
                 ECB.SetComponentEnabled<BeeReadyToPickupTag>(sortKey, bee.entity, false);
                 ECB.SetComponentEnabled<BeeIdleTag>(sortKey, bee.entity, true);

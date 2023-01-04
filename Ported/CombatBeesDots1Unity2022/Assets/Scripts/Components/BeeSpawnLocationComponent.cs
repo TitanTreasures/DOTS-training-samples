@@ -4,10 +4,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
 
-public struct BeePropertiesComponent : IComponentData
+public struct BeeSpawnLocationComponent : IComponentData
 {
-    public float flySpeed;
-    public Entity enemyTarget;
-    public float pickupRange;
     public float3 basePosition;
 }

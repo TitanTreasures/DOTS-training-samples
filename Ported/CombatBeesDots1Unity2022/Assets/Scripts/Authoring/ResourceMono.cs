@@ -15,6 +15,7 @@ public class ResourceBaker : Baker<ResourceMono>
         AddComponent(new ResourceTag());
         AddComponent(new ResourceBeingCarriedTag());
         AddComponent(new ResourcePropertiesComponent());
+        AddComponent(new ResourceReadyForPickUpTag());
 
         AddComponent(new BeeTargetPositionComponent
         {

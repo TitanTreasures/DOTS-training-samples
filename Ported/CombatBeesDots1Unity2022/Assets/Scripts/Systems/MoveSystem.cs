@@ -9,6 +9,7 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEditor.PackageManager;
 using UnityEngine;
+using static ResourcePositionBufferSystem;
 using static UnityEngine.EventSystems.EventTrigger;
 
 [BurstCompile]
@@ -79,13 +80,15 @@ public partial struct MoveSystem : ISystem
         private void Execute(BeeAspect bee, [EntityIndexInQuery] int sortKey)
         {
             bee.MoveTo(DeltaTime);
-            if (bee.IsInPickupRange(float3.zero, 1f))
+            if (bee.IsInPickupRange())
             {
-                //ECB.SetComponentEnabled<BeeReadyToPickupTag>(sortKey, bee.entity, true);
+                ECB.SetComponentEnabled<BeeReadyToPickupTag>(sortKey, bee.entity, true);
                 ECB.SetComponentEnabled<BeeSeekingTag>(sortKey, bee.entity, false);
             }
         }
     }
+
+    // TODO: LAV DET HER
     [BurstCompile]
     public partial struct BeeCarryingJob : IJobEntity
     {
@@ -96,11 +99,11 @@ public partial struct MoveSystem : ISystem
         [BurstCompile]
         private void Execute(BeeAspect bee, [EntityIndexInQuery] int sortKey)
         {
-            bee.MoveTo(DeltaTime);
-            if (bee.IsInPickupRange(BasePos, 1f))
+            bee.MoveToBase(DeltaTime);
+            if (bee.IsInSpawnLocationRange())
             {
-                ECB.SetComponentEnabled<BeeSeekingTag>(sortKey, bee.entity, true);
                 ECB.SetComponentEnabled<BeeCarryingTag>(sortKey, bee.entity, false);
+                ECB.SetComponentEnabled<BeeIdleTag>(sortKey, bee.entity, true);
             }
         }
     }

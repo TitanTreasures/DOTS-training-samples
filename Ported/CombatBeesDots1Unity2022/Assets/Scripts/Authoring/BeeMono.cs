@@ -23,6 +23,7 @@ public class BeeBaker : Baker<BeeMono>
         AddComponent(new BeeSeekingTag());
         AddComponent(new BeeCarryingTag());
         AddComponent(new BeeAttackingTag());
+        AddComponent(new BeeReadyToPickupTag());
 
         if (authoring.team == 0)
         {
@@ -35,6 +36,7 @@ public class BeeBaker : Baker<BeeMono>
         AddComponent(new BeePropertiesComponent
         {
             flySpeed = authoring.flySpeed,
+            pickupRange = authoring.pickupRadius * authoring.pickupRadius
         });
         AddComponent(new RandomComponent
         {
