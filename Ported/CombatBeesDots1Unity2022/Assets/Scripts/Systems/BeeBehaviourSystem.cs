@@ -43,8 +43,10 @@ public partial struct BeeBehaviourSystem : ISystem
                 case 0:
                     // This is not necessary, but is included to help with testing
                     ecb.SetComponentEnabled(entity, typeof(BeeSeekingTag), false);
+                    ecb.SetComponentEnabled(entity, typeof(BeeIdleTag), false);
 
                     ecb.SetComponentEnabled(entity, typeof(BeeAttackingTag), true);
+                    ecb.SetComponentEnabled(entity, typeof(WaitTimerComponent), true);
                     break;
                 case 1:
                     // This is not necessary, but is included to help with testing
@@ -54,8 +56,10 @@ public partial struct BeeBehaviourSystem : ISystem
                     if (resourcePositionBuffer.Length != 0)
                     {
                         var randomBufferIndex = random.NextInt(resourcePositionBuffer.Length);
-                        ecb.SetComponent<BeeTargetPositionComponent>(entity, new BeeTargetPositionComponent { targetPosition = resourcePositionBuffer.ElementAt(randomBufferIndex).Pos });
+                        ecb.SetComponent(entity, new BeeTargetPositionComponent { targetPosition = resourcePositionBuffer.ElementAt(randomBufferIndex).Pos });
                         ecb.SetComponentEnabled(entity, typeof(BeeSeekingTag), true);
+                        ecb.SetComponentEnabled(entity, typeof(BeeIdleTag), false);
+                        ecb.SetComponentEnabled(entity, typeof(WaitTimerComponent), true);
                     } else
                     {
                         ecb.SetComponentEnabled(entity, typeof(BeeIdleTag), true);

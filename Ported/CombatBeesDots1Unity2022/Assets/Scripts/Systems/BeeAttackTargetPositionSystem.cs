@@ -38,7 +38,6 @@ public partial struct BeeAttackTargetPositionSystem : ISystem
                 if(blueTransformAspect.TargetIsInAttackRange(yellowTransformAspect.WorldPosition))
                 {
                     firstFoundEnemyBeePosition = yellowTransformAspect.WorldPosition;
-                    Debug.Log(yellowTransformAspect.WorldPosition);
                     break;
                 }
             }

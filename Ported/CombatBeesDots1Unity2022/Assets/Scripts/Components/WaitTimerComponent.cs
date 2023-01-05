@@ -6,5 +6,6 @@ using UnityEngine;
 
 public struct WaitTimerComponent : IComponentData, IEnableableComponent
 {
+    public float maxWaitTime;
     public float timer;
 }

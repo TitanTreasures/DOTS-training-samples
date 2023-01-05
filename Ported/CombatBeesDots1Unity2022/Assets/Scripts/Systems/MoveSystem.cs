@@ -53,6 +53,12 @@ public partial struct MoveSystem : ISystem
         var deltaTime = SystemAPI.Time.DeltaTime;
         var ecb = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>();
 
+        new BeeAttackingJob
+        {
+            DeltaTime = deltaTime,
+            ECB = ecb.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
+        }.ScheduleParallel(attackingQuery);
+
         new BeeSeekingJob
         {
             DeltaTime = deltaTime,
@@ -76,6 +82,24 @@ public partial struct MoveSystem : ISystem
             DeltaTime = deltaTime,
             ECB = ecb.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
         }.ScheduleParallel(resourceDroppingQuery);
+    }
+
+    [BurstCompile]
+    public partial struct BeeAttackingJob : IJobEntity
+    {
+        public float DeltaTime;
+        public EntityCommandBuffer.ParallelWriter ECB;
+
+        [BurstCompile]
+        private void Execute(BeeAspect bee, [EntityIndexInQuery] int sortKey)
+        {
+            bee.MoveTo(DeltaTime);
+            if (bee.IsInPickupRange())
+            {
+                ECB.SetComponentEnabled<BeeReadyToPickupTag>(sortKey, bee.entity, true);
+                ECB.SetComponentEnabled<BeeSeekingTag>(sortKey, bee.entity, false);
+            }
+        }
     }
 
     [BurstCompile]
