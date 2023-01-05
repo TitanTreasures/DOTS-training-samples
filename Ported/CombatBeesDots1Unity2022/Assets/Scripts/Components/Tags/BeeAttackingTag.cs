@@ -5,5 +5,5 @@ using UnityEngine;
 
 public struct BeeAttackingTag : IComponentData, IEnableableComponent
 {
-    
+    public Entity target;
 }

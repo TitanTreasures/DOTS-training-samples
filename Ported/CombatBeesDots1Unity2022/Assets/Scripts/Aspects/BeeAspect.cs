@@ -14,7 +14,7 @@ public readonly partial struct BeeAspect : IAspect
     private readonly RefRO<BeeTargetPositionComponent> _targetPositionComponent;
     private readonly RefRO<BeeSpawnLocationComponent> _spawnLocationComponent;
 
-    private readonly RefRW<RandomComponent> _randomComponent;
+    private readonly RefRO<RandomComponent> _randomComponent;
 
 
 
@@ -54,11 +54,11 @@ public readonly partial struct BeeAspect : IAspect
 
     public int GetRandomResourceIndex(int resourcesAmount)
     {
-        return _randomComponent.ValueRW.randomValue.NextInt(resourcesAmount);
+        return _randomComponent.ValueRO.randomValue.NextInt(resourcesAmount);
     }
 
     public int GetRandomBeeState(int amountOfPossibleBeeStates)
     {
-        return _randomComponent.ValueRW.randomValue.NextInt(amountOfPossibleBeeStates);
+        return _randomComponent.ValueRO.randomValue.NextInt(amountOfPossibleBeeStates);
     }
 }

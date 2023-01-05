@@ -6,6 +6,7 @@ using System.Linq;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEditor.PackageManager;
@@ -18,27 +19,10 @@ public partial struct MoveSystem : ISystem
 {
     public Unity.Mathematics.Random random;
 
-    EntityQuery seekingQuery;
-    EntityQuery carryingQuery;
-    EntityQuery resourceBeingCarriedQuery;
-    EntityQuery attackingQuery;
-    EntityQuery resourceDroppingQuery;
-
-
-    
-    Entity e;
-    EntityQuery resourceTargetQuery;
-
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
         random = Unity.Mathematics.Random.CreateFromIndex(1);
-        seekingQuery = state.GetEntityQuery(ComponentType.ReadOnly<BeeSeekingTag>());
-        carryingQuery = state.GetEntityQuery(ComponentType.ReadOnly<BeeCarryingTag>());
-        attackingQuery = state.GetEntityQuery(ComponentType.ReadOnly<BeeAttackingTag>());
-        resourceBeingCarriedQuery = state.GetEntityQuery(ComponentType.ReadOnly<ResourceBeingCarriedTag>());
-        resourceTargetQuery = state.GetEntityQuery(ComponentType.ReadOnly<TargetResourceComponent>());
-        resourceDroppingQuery = state.GetEntityQuery(ComponentType.ReadOnly<ResourceDroppingTag>());
     }
 
     [BurstCompile]
@@ -53,29 +37,36 @@ public partial struct MoveSystem : ISystem
         var deltaTime = SystemAPI.Time.DeltaTime;
         var ecb = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>();
 
-        new BeeSeekingJob
+        var deps = new NativeArray<JobHandle>(4, Allocator.TempJob);
+        deps[0] = new BeeSeekingJob
         {
             DeltaTime = deltaTime,
-            ECB = ecb.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
-        }.ScheduleParallel(seekingQuery);
+            ECB = ecb.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter(),
+            //bees = state.GetComponentLookup<WorldTransform>()
+        }.ScheduleParallel(state.Dependency);
 
-        new BeeCarryingJob
+        deps[1] = new BeeCarryingJob
         {
             DeltaTime = deltaTime,
             ECB = ecb.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
-        }.ScheduleParallel(carryingQuery);
+        }.ScheduleParallel(state.Dependency);
 
-        new ResourceFollowJob
+        deps[2] = new ResourceFollowJob
         {
             DeltaTime = deltaTime,
             ECB = ecb.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
-        }.ScheduleParallel(resourceBeingCarriedQuery);
+        }.ScheduleParallel(state.Dependency);
 
-        new ResourceDroppingJob
+
+        deps[3] = new ResourceDroppingJob
         {
             DeltaTime = deltaTime,
             ECB = ecb.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
-        }.ScheduleParallel(resourceDroppingQuery);
+        }.ScheduleParallel(state.Dependency);
+
+        // Join jobs to before next update
+        state.Dependency = JobHandle.CombineDependencies(deps);
+        state.Dependency.Complete();
     }
 
     [BurstCompile]
@@ -83,9 +74,10 @@ public partial struct MoveSystem : ISystem
     {
         public float DeltaTime;
         public EntityCommandBuffer.ParallelWriter ECB;
+        //public ComponentLookup<WorldTransform> bees;
 
         [BurstCompile]
-        private void Execute(BeeAspect bee, [EntityIndexInQuery] int sortKey)
+        private void Execute(BeeSeekingTag seek, BeeAspect bee, [EntityIndexInQuery] int sortKey)
         {
             bee.MoveTo(DeltaTime);
             if (bee.IsInPickupRange())
@@ -105,7 +97,7 @@ public partial struct MoveSystem : ISystem
         public EntityCommandBuffer.ParallelWriter ECB;
 
         [BurstCompile]
-        private void Execute(BeeAspect bee, [EntityIndexInQuery] int sortKey)
+        private void Execute(BeeCarryingTag carry, BeeAspect bee, [EntityIndexInQuery] int sortKey)
         {
             bee.MoveToBase(DeltaTime);
             if (bee.IsInSpawnLocationRange())
@@ -122,7 +114,7 @@ public partial struct MoveSystem : ISystem
         public EntityCommandBuffer.ParallelWriter ECB;
 
         [BurstCompile]
-        private void Execute(ResourceAspect resource, [EntityIndexInQuery] int sortKey)
+        private void Execute(ResourceBeingCarriedTag carried, ResourceAspect resource, [EntityIndexInQuery] int sortKey)
         {
             resource.FollowTarget();
             if (resource.IsInBaseLocationRange())
@@ -139,7 +131,7 @@ public partial struct MoveSystem : ISystem
         public EntityCommandBuffer.ParallelWriter ECB;
 
         [BurstCompile]
-        private void Execute(ResourceAspect resource, [EntityIndexInQuery] int sortKey)
+        private void Execute(ResourceDroppingTag dropping, ResourceAspect resource, [EntityIndexInQuery] int sortKey)
         {
             resource.DroppingMovement(DeltaTime);
 
