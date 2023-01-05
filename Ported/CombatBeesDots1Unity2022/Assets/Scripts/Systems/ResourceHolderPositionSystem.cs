@@ -17,8 +17,11 @@ using static UnityEngine.EventSystems.EventTrigger;
 [UpdateBefore(typeof(MoveSystem))]
 public partial struct ResourceHolderPositionSystem : ISystem
 {
+    
+
     public void OnCreate(ref SystemState state)
     {
+        
     }
 
     public void OnDestroy(ref SystemState state)

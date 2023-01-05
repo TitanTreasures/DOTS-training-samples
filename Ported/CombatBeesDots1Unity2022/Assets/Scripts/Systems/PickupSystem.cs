@@ -41,6 +41,7 @@ public partial struct PickupSystem : ISystem
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
+        return;
         //var deltaTime = SystemAPI.Time.DeltaTime;
         //var ecb = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>();
 

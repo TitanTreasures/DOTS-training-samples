@@ -19,10 +19,22 @@ public partial struct MoveSystem : ISystem
 {
     public Unity.Mathematics.Random random;
 
+    EntityQuery seekingQuery;
+    EntityQuery carryingQuery;
+    EntityQuery resourceBeingCarriedQuery;
+    EntityQuery attackingQuery;
+    EntityQuery resourceDroppingQuery;
+
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
         random = Unity.Mathematics.Random.CreateFromIndex(1);
+
+        seekingQuery = state.GetEntityQuery(ComponentType.ReadOnly<BeeSeekingTag>());
+        carryingQuery = state.GetEntityQuery(ComponentType.ReadOnly<BeeCarryingTag>());
+        attackingQuery = state.GetEntityQuery(ComponentType.ReadOnly<BeeAttackingTag>());
+        resourceBeingCarriedQuery = state.GetEntityQuery(ComponentType.ReadOnly<ResourceBeingCarriedTag>());
+        resourceDroppingQuery = state.GetEntityQuery(ComponentType.ReadOnly<TargetResourceComponent>());
     }
 
     [BurstCompile]
@@ -38,31 +50,31 @@ public partial struct MoveSystem : ISystem
         var ecb = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>();
 
         var deps = new NativeArray<JobHandle>(4, Allocator.TempJob);
+
         deps[0] = new BeeSeekingJob
         {
             DeltaTime = deltaTime,
             ECB = ecb.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter(),
             //bees = state.GetComponentLookup<WorldTransform>()
-        }.ScheduleParallel(state.Dependency);
+        }.ScheduleParallel(seekingQuery, state.Dependency);
 
         deps[1] = new BeeCarryingJob
         {
             DeltaTime = deltaTime,
             ECB = ecb.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
-        }.ScheduleParallel(state.Dependency);
+        }.ScheduleParallel(deps[0]);
 
         deps[2] = new ResourceFollowJob
         {
             DeltaTime = deltaTime,
             ECB = ecb.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
-        }.ScheduleParallel(state.Dependency);
-
+        }.ScheduleParallel(deps[1]);
 
         deps[3] = new ResourceDroppingJob
         {
             DeltaTime = deltaTime,
             ECB = ecb.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
-        }.ScheduleParallel(state.Dependency);
+        }.ScheduleParallel(deps[2]);
 
         // Join jobs to before next update
         state.Dependency = JobHandle.CombineDependencies(deps);

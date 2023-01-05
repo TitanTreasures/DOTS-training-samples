@@ -67,7 +67,8 @@ public partial struct BeeBehaviourSystem : ISystem
                     if (resourcePositionBuffer.Length != 0)
                     {
                         var randomBufferIndex = random.NextInt(resourcePositionBuffer.Length);
-                        ecb.SetComponent<BeeTargetPositionComponent>(entity, new BeeTargetPositionComponent { targetPosition = resourcePositionBuffer.ElementAt(randomBufferIndex).Pos });
+                        ecb.SetComponent(entity, new BeeTargetPositionComponent { targetPosition = resourcePositionBuffer.ElementAt(randomBufferIndex).Pos });
+                        ecb.SetComponentEnabled(entity, typeof(BeeIdleTag), false);
                         ecb.SetComponentEnabled(entity, typeof(BeeSeekingTag), true);
                     } else
                     {
