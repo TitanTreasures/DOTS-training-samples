@@ -19,10 +19,19 @@ public partial struct MoveSystem : ISystem
 {
     public Unity.Mathematics.Random random;
 
+    EntityQuery seekingQuery;
+    EntityQuery carryingQuery;
+    EntityQuery resourceBeingCarriedQuery;
+    EntityQuery resourceDroppingQuery;
+
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
         random = Unity.Mathematics.Random.CreateFromIndex(1);
+        seekingQuery = state.GetEntityQuery(ComponentType.ReadOnly<BeeSeekingTag>());
+        carryingQuery = state.GetEntityQuery(ComponentType.ReadOnly<BeeCarryingTag>());
+        resourceBeingCarriedQuery = state.GetEntityQuery(ComponentType.ReadOnly<ResourceBeingCarriedTag>());
+        resourceDroppingQuery = state.GetEntityQuery(ComponentType.ReadOnly<ResourceDroppingTag>());
     }
 
     [BurstCompile]
@@ -43,26 +52,26 @@ public partial struct MoveSystem : ISystem
             DeltaTime = deltaTime,
             ECB = ecb.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter(),
             //bees = state.GetComponentLookup<WorldTransform>()
-        }.ScheduleParallel(state.Dependency);
+        }.ScheduleParallel(seekingQuery, state.Dependency);
 
         deps[1] = new BeeCarryingJob
         {
             DeltaTime = deltaTime,
             ECB = ecb.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
-        }.ScheduleParallel(state.Dependency);
+        }.ScheduleParallel(carryingQuery, state.Dependency);
 
         deps[2] = new ResourceFollowJob
         {
             DeltaTime = deltaTime,
             ECB = ecb.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
-        }.ScheduleParallel(state.Dependency);
+        }.ScheduleParallel(resourceBeingCarriedQuery, state.Dependency);
 
 
         deps[3] = new ResourceDroppingJob
         {
             DeltaTime = deltaTime,
             ECB = ecb.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
-        }.ScheduleParallel(state.Dependency);
+        }.ScheduleParallel(resourceDroppingQuery, state.Dependency);
 
         // Join jobs to before next update
         state.Dependency = JobHandle.CombineDependencies(deps);
@@ -77,7 +86,7 @@ public partial struct MoveSystem : ISystem
         //public ComponentLookup<WorldTransform> bees;
 
         [BurstCompile]
-        private void Execute(BeeSeekingTag seek, BeeAspect bee, [EntityIndexInQuery] int sortKey)
+        private void Execute(BeeAspect bee, [EntityIndexInQuery] int sortKey)
         {
             bee.MoveTo(DeltaTime);
             if (bee.IsInPickupRange())
@@ -97,7 +106,7 @@ public partial struct MoveSystem : ISystem
         public EntityCommandBuffer.ParallelWriter ECB;
 
         [BurstCompile]
-        private void Execute(BeeCarryingTag carry, BeeAspect bee, [EntityIndexInQuery] int sortKey)
+        private void Execute(BeeAspect bee, [EntityIndexInQuery] int sortKey)
         {
             bee.MoveToBase(DeltaTime);
             if (bee.IsInSpawnLocationRange())
@@ -114,7 +123,7 @@ public partial struct MoveSystem : ISystem
         public EntityCommandBuffer.ParallelWriter ECB;
 
         [BurstCompile]
-        private void Execute(ResourceBeingCarriedTag carried, ResourceAspect resource, [EntityIndexInQuery] int sortKey)
+        private void Execute(ResourceAspect resource, [EntityIndexInQuery] int sortKey)
         {
             resource.FollowTarget();
             if (resource.IsInBaseLocationRange())
@@ -131,7 +140,7 @@ public partial struct MoveSystem : ISystem
         public EntityCommandBuffer.ParallelWriter ECB;
 
         [BurstCompile]
-        private void Execute(ResourceDroppingTag dropping, ResourceAspect resource, [EntityIndexInQuery] int sortKey)
+        private void Execute(ResourceAspect resource, [EntityIndexInQuery] int sortKey)
         {
             resource.DroppingMovement(DeltaTime);
 
