@@ -6,6 +6,7 @@ using System.Linq;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEditor.PackageManager;
@@ -53,11 +54,13 @@ public partial struct MoveSystem : ISystem
         var deltaTime = SystemAPI.Time.DeltaTime;
         var ecb = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>();
 
-        new BeeAttackingJob
+        var firstPartOfAttackJob = new BeeAttackingJob
         {
             DeltaTime = deltaTime,
             ECB = ecb.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
-        }.ScheduleParallel(attackingQuery);
+        };
+
+        //JobHandle bla = firstPartOfAttackJob.Schedule();
 
         new BeeSeekingJob
         {
