@@ -86,33 +86,33 @@ public partial struct InitialSpawnerSystem : ISystem
     }
 
     public void SetBeeTagComponents(EntityCommandBuffer ecb, Entity entity) {
-        ecb.AddComponent(entity, typeof(BeeIdleTag));
-        ecb.AddComponent(entity, typeof(BeeSeekingTag));
-        ecb.AddComponent(entity, typeof(BeeCarryingTag));
-        ecb.AddComponent(entity, typeof(BeeAttackingTag));
-        ecb.AddComponent(entity, typeof(BeeReadyToPickupTag));
+        ecb.AddComponent(entity, ComponentType.ReadOnly<BeeIdleTag>());
+        ecb.AddComponent(entity, ComponentType.ReadOnly<BeeSeekingTag>());
+        ecb.AddComponent(entity, ComponentType.ReadOnly<BeeCarryingTag>());
+        ecb.AddComponent(entity, ComponentType.ReadOnly<BeeAttackingTag>());
+        ecb.AddComponent(entity, ComponentType.ReadOnly<BeeReadyToPickupTag>());
 
-        ecb.SetComponentEnabled(entity, typeof(BeeIdleTag), true);
-        ecb.SetComponentEnabled(entity, typeof(BeeSeekingTag), false);
-        ecb.SetComponentEnabled(entity, typeof(BeeCarryingTag), false);
-        ecb.SetComponentEnabled(entity, typeof(BeeAttackingTag), false);
-        ecb.SetComponentEnabled(entity, typeof(BeeReadyToPickupTag), false);
+        ecb.SetComponentEnabled(entity, ComponentType.ReadOnly<BeeIdleTag>(), true);
+        ecb.SetComponentEnabled(entity, ComponentType.ReadOnly<BeeSeekingTag>(), false);
+        ecb.SetComponentEnabled(entity, ComponentType.ReadOnly<BeeCarryingTag>(), false);
+        ecb.SetComponentEnabled(entity, ComponentType.ReadOnly<BeeAttackingTag>(), false);
+        ecb.SetComponentEnabled(entity, ComponentType.ReadOnly<BeeReadyToPickupTag>(), false);
     }
 
     public void SetResourceTagComponents(EntityCommandBuffer ecb, Entity entity)
     {
-        ecb.AddComponent(entity, typeof(ResourceTag));
-        ecb.AddComponent(entity, typeof(ResourceBeingCarriedTag));
-        ecb.AddComponent(entity, typeof(ResourceReadyForPickUpTag));
-        ecb.AddComponent(entity, typeof(ResourceDoesNotExistInBufferTag));
-        ecb.AddComponent(entity, typeof(ResourceDroppingTag));
-        ecb.AddComponent(entity, typeof(ResourceDespawnTag));
+        ecb.AddComponent(entity, ComponentType.ReadOnly<ResourceTag>());
+        ecb.AddComponent(entity, ComponentType.ReadOnly<ResourceBeingCarriedTag>());
+        ecb.AddComponent(entity, ComponentType.ReadOnly<ResourceReadyForPickUpTag>());
+        ecb.AddComponent(entity, ComponentType.ReadOnly<ResourceDoesNotExistInBufferTag>());
+        ecb.AddComponent(entity, ComponentType.ReadOnly<ResourceDroppingTag>());
+        ecb.AddComponent(entity, ComponentType.ReadOnly < ResourceDespawnTag>());
 
-        ecb.SetComponentEnabled(entity, typeof(ResourceTag), true);
-        ecb.SetComponentEnabled(entity, typeof(ResourceBeingCarriedTag), false);
-        ecb.SetComponentEnabled(entity, typeof(ResourceReadyForPickUpTag), false);
-        ecb.SetComponentEnabled(entity, typeof(ResourceDoesNotExistInBufferTag), false);
-        ecb.SetComponentEnabled(entity, typeof(ResourceDroppingTag), true);
-        ecb.SetComponentEnabled(entity, typeof(ResourceDespawnTag), false);
+        ecb.SetComponentEnabled(entity, ComponentType.ReadOnly<ResourceTag>(), true);
+        ecb.SetComponentEnabled(entity, ComponentType.ReadOnly<ResourceBeingCarriedTag>(), false);
+        ecb.SetComponentEnabled(entity, ComponentType.ReadOnly<ResourceReadyForPickUpTag>(), false);
+        ecb.SetComponentEnabled(entity, ComponentType.ReadOnly<ResourceDoesNotExistInBufferTag>(), false);
+        ecb.SetComponentEnabled(entity, ComponentType.ReadOnly<ResourceDroppingTag>(), true);
+        ecb.SetComponentEnabled(entity, ComponentType.ReadOnly<ResourceDespawnTag>(), false);
     }
 }

@@ -140,7 +140,6 @@ public partial struct MoveSystem : ISystem
 
             if (resource.HasHitGround())
             {
-                Debug.Log(DeltaTime);
                 if (resource.IsInBaseLocationRange())
                 {
                     ECB.SetComponentEnabled<ResourceDroppingTag>(sortKey, resource.entity, false);

@@ -40,42 +40,47 @@ public partial struct BeeBehaviourSystem : ISystem
     {
         var ecb = new EntityCommandBuffer(Allocator.Temp);
 
-        var amountOfBeeStates = 2;
+        var amountOfBeeStates = 1;
 
         var bufferEntity = SystemAPI.GetSingletonEntity<ResourcePosBufferTag>();
 
         DynamicBuffer<ResourcePositionElementBuffer> resourcePositionBuffer = state.EntityManager.GetBuffer<ResourcePositionElementBuffer>(bufferEntity);
 
-        foreach (var (tag, entity) in SystemAPI.Query<BeeIdleTag>().WithEntityAccess())
+        if (resourcePositionBuffer.Length != 0)
         {
-            var randomBeeStateIndex = random.NextInt(amountOfBeeStates);
-            
-            switch (randomBeeStateIndex)
+            foreach (var (tag, entity) in SystemAPI.Query<BeeIdleTag>().WithEntityAccess())
             {
-                case 0:
-                    // This is not necessary, but is included to help with testing
-                    ecb.SetComponentEnabled(entity, typeof(BeeSeekingTag), false);
+                var randomBeeStateIndex = random.NextInt(amountOfBeeStates);
 
-                    ecb.SetComponentEnabled(entity, typeof(BeeAttackingTag), false);
-                    ecb.SetComponentEnabled(entity, typeof(BeeIdleTag), true);
-                    break;
-                case 1:
-                    // This is not necessary, but is included to help with testing
-                    ecb.SetComponentEnabled(entity, typeof(BeeAttackingTag), false);
+                switch (randomBeeStateIndex)
+                {
+                    case 1:
+                        // This is not necessary, but is included to help with testing
+                        ecb.SetComponentEnabled(entity, typeof(BeeSeekingTag), false);
 
-                    resourcePositionBuffer = state.EntityManager.GetBuffer<ResourcePositionElementBuffer>(bufferEntity);
-                    if (resourcePositionBuffer.Length != 0)
-                    {
-                        var randomBufferIndex = random.NextInt(resourcePositionBuffer.Length);
-                        ecb.SetComponent<BeeTargetPositionComponent>(entity, new BeeTargetPositionComponent { targetPosition = resourcePositionBuffer.ElementAt(randomBufferIndex).Pos });
-                        ecb.SetComponentEnabled(entity, typeof(BeeSeekingTag), true);
-                    } else
-                    {
+                        ecb.SetComponentEnabled(entity, typeof(BeeAttackingTag), false);
                         ecb.SetComponentEnabled(entity, typeof(BeeIdleTag), true);
-                    }
-                    break;
+                        break;
+                    case 0:
+                        // This is not necessary, but is included to help with testing
+                        ecb.SetComponentEnabled(entity, typeof(BeeAttackingTag), false);
+
+                        resourcePositionBuffer = state.EntityManager.GetBuffer<ResourcePositionElementBuffer>(bufferEntity);
+                        if (resourcePositionBuffer.Length != 0)
+                        {
+                            var randomBufferIndex = random.NextInt(resourcePositionBuffer.Length);
+                            ecb.SetComponent<BeeTargetPositionComponent>(entity, new BeeTargetPositionComponent { targetPosition = resourcePositionBuffer.ElementAt(randomBufferIndex).Pos });
+                            ecb.SetComponentEnabled(entity, typeof(BeeSeekingTag), true);
+                            ecb.SetComponentEnabled(entity, typeof(BeeIdleTag), false);
+                        }
+                        else
+                        {
+                            ecb.SetComponentEnabled(entity, typeof(BeeIdleTag), true);
+                        }
+                        break;
+                }
+                //ecb.SetComponentEnabled(entity, typeof(BeeIdleTag), false);
             }
-            //ecb.SetComponentEnabled(entity, typeof(BeeIdleTag), false);
         }
         ecb.Playback(state.EntityManager);
     }
