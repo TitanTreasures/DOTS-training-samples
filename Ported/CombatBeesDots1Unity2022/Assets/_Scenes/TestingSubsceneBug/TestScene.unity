@@ -214,7 +214,7 @@ MonoBehaviour:
   randomSeed: 69
   resourcePrefab: {fileID: 3858072093232548404, guid: 4dc7ec01430a6b1428c119cebb99837a,
     type: 3}
-  resourceSpawnCount: 50
+  resourceSpawnCount: 1000
   resourceFieldPosition:
     x: 0
     y: 10
@@ -225,7 +225,7 @@ MonoBehaviour:
     z: 4
   blueBeePrefab: {fileID: 3858072093232548404, guid: f5e24fdf1bc7b7b408851819d8697ec2,
     type: 3}
-  blueBeeSpawnCount: 100
+  blueBeeSpawnCount: 50000
   blueBeeFieldPosition:
     x: 20
     y: 20
@@ -236,7 +236,7 @@ MonoBehaviour:
     z: 4
   yellowBeePrefab: {fileID: 3858072093232548404, guid: 4b46197f3ee49394fa94442063c77dc5,
     type: 3}
-  yellowBeeSpawnCount: 100
+  yellowBeeSpawnCount: 50000
   yellowBeeFieldPosition:
     x: -20
     y: 20
