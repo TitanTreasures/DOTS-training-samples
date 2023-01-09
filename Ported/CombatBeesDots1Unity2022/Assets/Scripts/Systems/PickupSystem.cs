@@ -21,15 +21,10 @@ public partial struct PickupSystem : ISystem
 {
     public Unity.Mathematics.Random random;
 
-    EntityQuery beeReadyToPickupQuery;
-    //EntityQuery resourceReadyForPickUpQuery;
-    //EntityQuery combinedPickupQuery;
-
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
         random = Unity.Mathematics.Random.CreateFromIndex(1);
-        beeReadyToPickupQuery = state.GetEntityQuery(ComponentType.ReadOnly<BeeReadyToPickupTag>());
     }
 
     [BurstCompile]
@@ -41,10 +36,6 @@ public partial struct PickupSystem : ISystem
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        //var deltaTime = SystemAPI.Time.DeltaTime;
-        //var ecb = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>();
-
-
         EntityManager spa = state.EntityManager;
 
         bool test = true;
@@ -68,27 +59,5 @@ public partial struct PickupSystem : ISystem
                 spa.SetComponentEnabled<BeeIdleTag>(bee.entity, true);
             }
         }
-        
-
-        //new BeePickupJob
-        //{
-        //    DeltaTime = deltaTime,
-        //    ECB = ecb.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
-        //}.ScheduleParallel(beeReadyToPickupQuery);
     }
-
-    //[BurstCompile]
-    //public partial struct BeePickupJob : IJobEntity
-    //{
-    //    public float DeltaTime;
-    //    public float3 targetPos;
-    //    public EntityCommandBuffer.ParallelWriter ECB;
-
-    //    [BurstCompile]
-    //    private void Execute(BeeAspect bee, [EntityIndexInQuery] int sortKey)
-    //    {
-    //        bool test = true;
-            
-    //    }
-    //}
 }

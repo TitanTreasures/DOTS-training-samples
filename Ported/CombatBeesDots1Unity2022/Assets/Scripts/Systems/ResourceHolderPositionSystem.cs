@@ -15,16 +15,18 @@ using static UnityEngine.EventSystems.EventTrigger;
 
 [UpdateAfter(typeof(ResourcePositionBufferSystem))]
 [UpdateBefore(typeof(MoveSystem))]
+[BurstCompile]
 public partial struct ResourceHolderPositionSystem : ISystem
 {
+    [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
     }
-
+    [BurstCompile]
     public void OnDestroy(ref SystemState state)
     {
     }
-
+    [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
         EntityManager spa = state.EntityManager;
@@ -57,7 +59,6 @@ public partial struct ResourceHolderPositionSystem : ISystem
                 var cool = spa.GetComponentData<ResourcePropertiesComponent>(resourceEntity);
                 cool.currentBeeHolderPosition = closestBeePosition;
                 spa.SetComponentData(resourceEntity, cool);
-                
             }
         }
     }

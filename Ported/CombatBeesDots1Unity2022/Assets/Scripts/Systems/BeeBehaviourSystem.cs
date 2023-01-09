@@ -12,30 +12,23 @@ using UnityEngine;
 using static ResourcePositionBufferSystem;
 using static UnityEngine.EventSystems.EventTrigger;
 
+[BurstCompile]
 public partial struct BeeBehaviourSystem : ISystem
 {
     public Unity.Mathematics.Random random;
 
-    EntityQuery idleQuery;
-
-    //private BufferLookup<ResourcePositionElementBuffer> _bufferLookup;
-
-    //EntityQuery attackingQuery;
-    //EntityQuery seekingQuery;
+    [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
         random = Unity.Mathematics.Random.CreateFromIndex(1);
-        idleQuery = state.GetEntityQuery(ComponentType.ReadOnly<BeeIdleTag>());
-        //attackingQuery = state.GetEntityQuery(ComponentType.ReadOnly<BeeAttackingTag>());
-        //seekingQuery = state.GetEntityQuery(ComponentType.ReadOnly<BeeSeekingTag>());
-
-        //_bufferLookup = state.GetBufferLookup<ResourcePositionElementBuffer>(true);
     }
 
+    [BurstCompile]
     public void OnDestroy(ref SystemState state)
     {
     }
 
+    [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
         var ecb = new EntityCommandBuffer(Allocator.Temp);
@@ -54,32 +47,33 @@ public partial struct BeeBehaviourSystem : ISystem
 
                 switch (randomBeeStateIndex)
                 {
-                    case 1:
-                        // This is not necessary, but is included to help with testing
-                        ecb.SetComponentEnabled(entity, typeof(BeeSeekingTag), false);
-
-                        ecb.SetComponentEnabled(entity, typeof(BeeAttackingTag), false);
-                        ecb.SetComponentEnabled(entity, typeof(BeeIdleTag), true);
-                        break;
                     case 0:
                         // This is not necessary, but is included to help with testing
-                        ecb.SetComponentEnabled(entity, typeof(BeeAttackingTag), false);
+                        ecb.SetComponentEnabled(entity, ComponentType.ReadOnly<BeeAttackingTag>(), false);
 
                         resourcePositionBuffer = state.EntityManager.GetBuffer<ResourcePositionElementBuffer>(bufferEntity);
                         if (resourcePositionBuffer.Length != 0)
                         {
                             var randomBufferIndex = random.NextInt(resourcePositionBuffer.Length);
                             ecb.SetComponent<BeeTargetPositionComponent>(entity, new BeeTargetPositionComponent { targetPosition = resourcePositionBuffer.ElementAt(randomBufferIndex).Pos });
-                            ecb.SetComponentEnabled(entity, typeof(BeeSeekingTag), true);
-                            ecb.SetComponentEnabled(entity, typeof(BeeIdleTag), false);
+                            ecb.SetComponentEnabled(entity, ComponentType.ReadOnly<BeeSeekingTag>(), true);
+                            ecb.SetComponentEnabled(entity, ComponentType.ReadOnly<BeeIdleTag>(), false);
                         }
                         else
                         {
-                            ecb.SetComponentEnabled(entity, typeof(BeeIdleTag), true);
+                            ecb.SetComponentEnabled(entity, ComponentType.ReadOnly<BeeIdleTag>(), true);
                         }
                         break;
+                    // This code is left in comment form as the BeeAttacking functionality had to be abandoned due to time limitations
+                    // despite it being nearly functional. It is left in comment form for context.
+                    //case 1:
+                    //    // This is not necessary, but is included to help with testing
+                    //    ecb.SetComponentEnabled(entity, ComponentType.ReadOnly<BeeSeekingTag>(), false);
+
+                    //    ecb.SetComponentEnabled(entity, typeof(BeeAttackingTag), false);
+                    //    ecb.SetComponentEnabled(entity, typeof(BeeIdleTag), true);
+                    //    break;
                 }
-                //ecb.SetComponentEnabled(entity, typeof(BeeIdleTag), false);
             }
         }
         ecb.Playback(state.EntityManager);

@@ -21,11 +21,6 @@ public partial struct ResourcePositionBufferSystem : ISystem
 
     public struct ResourcePositionElementBuffer : IBufferElementData
     {
-        // These implicit conversions are optional, but can help reduce typing.
-        //public static implicit operator int(MyBufferElement e) { return e.Value; }
-        //public static implicit operator MyBufferElement(int e) { return new MyBufferElement { Value = e }; }
-
-        // Actual value each buffer element will store.
         public float3 Pos;
         public Entity Resource;
     }
@@ -49,7 +44,6 @@ public partial struct ResourcePositionBufferSystem : ISystem
 
         foreach (var (resourceTransformAspect, entity) in SystemAPI.Query<TransformAspect>().WithAll<ResourceDoesNotExistInBufferTag>().WithEntityAccess())
         {
-            //Debug.Log(resourceAspect.LocalPosition);
             var element = new ResourcePositionElementBuffer
             {
                 Pos = resourceTransformAspect.LocalPosition,
@@ -69,7 +63,5 @@ public partial struct ResourcePositionBufferSystem : ISystem
             }
         }
         ecb.Playback(state.EntityManager);
-
-        
     }
 }

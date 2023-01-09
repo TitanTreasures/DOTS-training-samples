@@ -91,7 +91,6 @@ public partial struct MoveSystem : ISystem
         }
     }
 
-    // TODO: LAV DET HER
     [BurstCompile]
     public partial struct BeeCarryingJob : IJobEntity
     {
